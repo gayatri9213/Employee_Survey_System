@@ -28,9 +28,10 @@ import java.util.regex.Pattern;
 
 public class MainAdminGUI extends JFrame {
     JFrame frame;
-    JPanel buttonPanel, topPanel, mainPanel, editPanel, createPanel, pendingPanel,reportPanel;
+    JPanel buttonPanel, topPanel, mainPanel, editPanel, createPanel,reportPanel;
     JButton Create, Editprofile,Createsurvey,Pendingtask,Report1;
     JLabel title;
+    AdminPendingTask adminPendingTaskObj;
 
 
 
@@ -55,14 +56,13 @@ public class MainAdminGUI extends JFrame {
         mainPanel = new JPanel();
         editPanel = new JPanel();
         createPanel = new JPanel();
-        pendingPanel=new JPanel();
+
         reportPanel=new JPanel();
         JScrollBar scroll = new JScrollBar(JScrollBar.HORIZONTAL);
         Create = new JButton("Create User");
         Editprofile = new JButton("Edit Profile");
         Createsurvey = new JButton("Create Survey");
         Pendingtask = new JButton("Pending Task");
-
         Report1 = new JButton("View Report");
 
 
@@ -106,7 +106,7 @@ public class MainAdminGUI extends JFrame {
         buttonPanel.add(Pendingtask);
         buttonPanel.add(Report1);
         topPanel.add(title);
-        frame.add(pendingPanel);
+
         //pendingPanel.setVisible(false);
         frame.add(mainPanel);
         frame.add(editPanel);
@@ -148,7 +148,9 @@ public class MainAdminGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    AdminPendingTask adminPendingTask=new AdminPendingTask();
+                    adminPendingTaskObj=new AdminPendingTask();
+                    frame.add(adminPendingTaskObj.pendingTaskMainPanel);
+                    adminPendingTaskObj.pendingTaskMainPanel.setVisible(true);
 
 
                 } catch (SQLException ex) {

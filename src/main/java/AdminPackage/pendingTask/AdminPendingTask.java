@@ -13,8 +13,8 @@ import java.util.regex.PatternSyntaxException;
 
 public class AdminPendingTask implements InitiateComponents
 {
-    private JFrame adminpendingtaskFrame = new JFrame("Admin Pending Tasks");
-    private JPanel pendingTaskMainPanel = new JPanel();
+    //private JFrame adminpendingtaskFrame = new JFrame("Admin Pending Tasks");
+    public JPanel pendingTaskMainPanel = new JPanel();
     private JPanel upperPanel=new JPanel();
     private JTable table;
     public AdminPendingTask() throws SQLException, ClassNotFoundException {
@@ -22,14 +22,14 @@ public class AdminPendingTask implements InitiateComponents
 
     }
     public void initComponents() throws SQLException, ClassNotFoundException {
-        adminpendingtaskFrame.setLayout(null);
-        adminpendingtaskFrame.setExtendedState(adminpendingtaskFrame.MAXIMIZED_BOTH);
-        adminpendingtaskFrame.setVisible(true);
+        //adminpendingtaskFrame.setLayout(null);
+        //adminpendingtaskFrame.setExtendedState(adminpendingtaskFrame.MAXIMIZED_BOTH);
+        //adminpendingtaskFrame.setVisible(true);
         pendingTaskMainPanel.setVisible(true);
         pendingTaskMainPanel.setLayout(null);
         pendingTaskMainPanel.setBounds(251,120,1450,629);
         pendingTaskMainPanel.setBackground(Color.LIGHT_GRAY);
-        adminpendingtaskFrame.add(pendingTaskMainPanel);
+        //adminpendingtaskFrame.add(pendingTaskMainPanel);
         upperPanel= new JPanel();
         upperPanel.setLayout(null);
         upperPanel.setBounds(0,0,1450,100);
@@ -99,7 +99,7 @@ public class AdminPendingTask implements InitiateComponents
         return conn;
     }*/
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    /*public static void main(String[] args) throws SQLException, ClassNotFoundException {
         new AdminPendingTask();
-    }
+    }*/
 }
