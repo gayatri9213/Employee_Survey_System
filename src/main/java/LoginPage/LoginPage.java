@@ -16,7 +16,9 @@ import java.sql.*;
 
 import static com.util.UtilityFunctions.encryptDecrypt;
 
-public class LoginPage implements InitiateComponents
+public class
+
+LoginPage implements InitiateComponents
 {
 
 private JFrame loginFrame;
