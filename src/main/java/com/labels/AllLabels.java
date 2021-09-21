@@ -3,15 +3,12 @@ package com.labels;
 import javax.swing.*;
 
 public class AllLabels extends JLabel{
-    JLabel createDateLabel = new JLabel("Creation Date :");
-    JLabel publishDateLabel=new JLabel("Publish Date :");
+    JLabel createDateLabel = new JLabel("Publish Date :");
+    JLabel publishDateLabel=new JLabel("Create Date :");
     JLabel closeDateLabel=new JLabel("Close Date :");
-    JLabel closeDate=new JLabel();
-    JLabel publishDate=new JLabel();
-    JLabel createDate=new JLabel();
 
     public JLabel putCreateDate() {
-        createDateLabel.setBounds(10,1,100,10);
+        createDateLabel.setBounds(10,12,100,10);
         return createDateLabel;
     }
 
@@ -21,22 +18,23 @@ public class AllLabels extends JLabel{
     }
 
     public JLabel putCloseDate(){
-        closeDateLabel.setBounds(10,41,100,10);
+        closeDateLabel.setBounds(10,38,100,10);
         return closeDateLabel;
     }
-
-    public JLabel closeDate(){
-        closeDate.setBounds(200,41,100,10);
-        return closeDate;
-    }
-
-    public JLabel createDate(){
-        createDate.setBounds(200,41,100,10);
-        return createDate;
-    }
-
-    public JLabel publishDate(){
-        publishDate.setBounds(200,41,100,10);
-        return publishDate;
-    }
 }
+
+
+/*
+
+
+                        JTextField comment =new JTextField();
+                        comment.setBounds(150,200,600,60);
+                        comment.setVisible(false);
+                        mainPanel.add(comment);
+                        if(slider1.getValue() < 2){
+                            comment.setVisible(true);
+                        }
+
+
+
+ */

@@ -11,9 +11,9 @@ public class AllUserInputButtons extends JButton {
     JButton submitButton = new JButton("Submit");
     JButton resetButton = new JButton("Clear");
     JButton nextButton = new JButton("Next");
-    JButton secondNextButton = new JButton("2 Next");
-    JButton thirdNextButton = new JButton("3 Next");
-    JButton fourthNextButton = new JButton("4 Next");
+    JButton secondNextButton = new JButton("Next");
+    JButton thirdNextButton = new JButton("Next");
+    JButton fourthNextButton = new JButton("Next");
     JButton fifthNextButton = new JButton("Submit");
     JButton prevButton = new JButton("Previous");
 
