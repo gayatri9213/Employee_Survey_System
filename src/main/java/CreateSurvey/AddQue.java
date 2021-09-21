@@ -1,14 +1,12 @@
 package CreateSurvey;
 
+import com.util.UtilityFunctions;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class AddQue extends JFrame
 {
@@ -57,27 +55,32 @@ public class AddQue extends JFrame
         {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    c = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey_mgmt", "Aress", "Aress@aress123");
-                    System.out.println("Connected to Database");
-                    s = c.createStatement();
+
+                   // if(c.isClosed())
+                     //   c.beginRequest();
+
+                    Connection connection= UtilityFunctions.createConnection();
+                    s = connection.createStatement();
                     String Key[]= {"question_id"};
                     String str = " insert into questions(question) values('" + EnterQuestionTextField.getText() + "')";
 
-                    PreparedStatement p = c.prepareStatement(str,Key);
+                    PreparedStatement p = connection.prepareStatement(str,Key);
                     int b= p.executeUpdate();
-
+                    //int Key=p.getGeneratedKeys().findColumn("question_id");
                     ResultSet rs=p.getGeneratedKeys();
                     if(rs.next())
                         question_id=rs.getInt(1);
-
+                    // question_id= p.getGeneratedKeys().getInt(0);
+                    //  question_id= p.executeUpdate(str,"question_id");
+                    //boolean b=p.execute(str, "question_id");
 
                     boolean x = false;
                     if (b>0) {
                         System.out.println("Record Successfully Inserted");
-
+                        // c.close();
+                        //   c.beginRequest();
                         String str1 = " insert into category_question(category_id,question_id) values('"+categoryId+"','"+question_id+"')";
-                        PreparedStatement p1 = c.prepareStatement(str1);
+                        PreparedStatement p1 = connection.prepareStatement(str1);
                         p1.execute();
                         System.out.println("Record Successfully Inserted | many to many table");
                         c.close();
@@ -89,7 +92,6 @@ public class AddQue extends JFrame
                 }
                 JOptionPane.showMessageDialog(frame, "Successfull Insertion");
                 //new MainClass();
-                frame.setVisible(false);
 
 
             }        });

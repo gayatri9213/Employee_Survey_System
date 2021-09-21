@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.plaf.nimbus.State;
 
 import CreateSurvey.MainClass;
+import com.util.UtilityFunctions;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -54,8 +55,9 @@ public class AddCat extends JFrame {
             ResultSet resultset;
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    c = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey_mgmt", "Aress", "Aress@aress123");
+
+
+                    Connection connection= UtilityFunctions.createConnection();
 
                     String str = " insert into categories(category_name) values('" + EnterCategoryTextField.getText() + "')";
 
@@ -66,7 +68,7 @@ public class AddCat extends JFrame {
                         System.out.println("Record inserted successfully");
                         tempCatLong = resultset.getInt(1);
                     }*/
-                    PreparedStatement p = c.prepareStatement(str);
+                    PreparedStatement p = connection.prepareStatement(str);
 
                     boolean x = false;
                     if (x == p.execute()) {

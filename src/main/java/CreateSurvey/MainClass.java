@@ -1,5 +1,9 @@
 package CreateSurvey;
 
+import com.util.UtilityFunctions;
+
+
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -45,10 +49,14 @@ public class MainClass extends JFrame implements ItemListener {
     String header[] = new String[]{"Category", "Question"};
 
 
+    private int queList[] = new int[20];
+    public int qi=0;
+
+
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
         MainClass window = new MainClass();
-        window.connection();
+        //window.connection();
     }
 
     public void displaySurveyDetails() {
@@ -69,11 +77,6 @@ public class MainClass extends JFrame implements ItemListener {
 
 
 
-    public void connection() throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        c = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey_mgmt", "Aress", "Aress@aress123");
-        System.out.println("Connected to Database");
-    }
 
     public void initialize() {
         JPanel panel = new JPanel();
@@ -98,7 +101,7 @@ public class MainClass extends JFrame implements ItemListener {
 
         //Category JCombobox
         String catagory[] = {};
-        category = new JComboBox(catagory);
+        category = new JComboBox (catagory);
         category.setBounds(100, 50, 230, 26);
         panel.add(category);
         category_combo();
@@ -124,7 +127,7 @@ public class MainClass extends JFrame implements ItemListener {
 
         //Question JCombobox
         String questions[] = {};
-        question = new JComboBox(questions);
+        question = new JComboBox (questions);
         question.setBounds(100, 150, 380, 20);
         panel.add(question);
 
@@ -189,9 +192,19 @@ public class MainClass extends JFrame implements ItemListener {
             public void actionPerformed(ActionEvent arg0) {
                 Survey data = new Survey(category.getItemAt(category.getSelectedIndex()).toString(), question.getItemAt(question.getSelectedIndex()).toString());
                 surveyList.add(data);
+
+                // System.out.println(" question : "+question.getItemAt(question.getSelectedInde)).toString());
+                queList[qi] = insert_id_question_combo(question.getItemAt(question.getSelectedIndex()).toString());
+                qi++;
+                // System.out.println("id in quelist: "+queList[qi]);
                 displaySurveyDetails();
             }
         });
+        for(int i = 0; i<qi; i++)
+        {
+            System.out.println("que list = "+queList[qi]);
+
+        }
         btnAdd.setFont(new Font("Tahoma", Font.BOLD, 12));
         btnAdd.setBounds(550, 400, 89, 23);
         panel.add(btnAdd);
@@ -241,32 +254,40 @@ public class MainClass extends JFrame implements ItemListener {
                 DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 LocalDateTime now = LocalDateTime.now();
                 currentDate = dateFormat.format(now);
-                //System.out.println(currentDate);
 
                 //Publish Date
                 pdate = publishdateTF.getText();
                 Pattern DATE_PATTERN = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
                 cdate = closeddateTF.getText();
-                try {
-                    if (DATE_PATTERN.matcher(pdate).matches()) {
-                        if (DATE_PATTERN.matcher(cdate).matches()) {
-                            if (pdate.compareTo(cdate) > 0) {
-                                JOptionPane.showMessageDialog(frame, " Enter valid Date", "Check date", JOptionPane.ERROR_MESSAGE);
-                            }
-                            else {
-                                String query = "insert into survey_responses(manager_id,question_id,cat_id,creation_date,publish_date, close_date) values('"+id+"','" + idq+ "','" + idc + "','" + currentDate + "','" + pdate + "', '" + cdate + "')";
-                                p = c.prepareStatement(query);
-                                p.execute(query);
-                                JOptionPane.showMessageDialog(frame, "Survey Launch Successfully");
-                                model.setRowCount(0);
-                            }
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(frame, "Please Enter Correct Date", "Check date", JOptionPane.ERROR_MESSAGE);
-                    }
 
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
+                for(int i=0;i<qi;i++) {
+                    try {
+                        System.out.println("index "+ i);
+                        System.out.println("List id"+ queList[i]);
+
+
+                        if (DATE_PATTERN.matcher(pdate).matches()) {
+                            if (DATE_PATTERN.matcher(cdate).matches()) {
+                                if (pdate.compareTo(cdate) > 0) {
+                                    JOptionPane.showMessageDialog(frame, " Enter valid Date", "Check date", JOptionPane.ERROR_MESSAGE);
+                                }
+                                else {
+
+                                    Connection connection= UtilityFunctions.createConnection();
+                                    String query = "insert into survey_responses(manager_id,question_id,cat_id,creation_date,publish_date, close_date) values('"+id+"','" + queList[i]+ "','" + categoryId + "','" + currentDate + "','" + pdate + "', '" + cdate + "')";
+                                    p = connection.prepareStatement(query);
+                                    p.execute(query);
+                                    JOptionPane.showMessageDialog(frame, "Survey Launch Successfully");
+                                    model.setRowCount(0);
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Please Enter Correct Date", "Check date", JOptionPane.ERROR_MESSAGE);
+                        }
+
+                    } catch (SQLException |ClassNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
 
@@ -302,9 +323,10 @@ public class MainClass extends JFrame implements ItemListener {
         //selectedCategoryName="Communication";
         categoryId=0;
         try {
-            connection();
+
+            Connection connection= UtilityFunctions.createConnection();
             String sql="select category_id from categories where category_name="+"'"+selectedCategoryName+"'";
-            p = c.prepareStatement(sql);
+            p = connection.prepareStatement(sql);
             r = p.executeQuery();
             //r.first();
             while (r.next()) {
@@ -314,7 +336,7 @@ public class MainClass extends JFrame implements ItemListener {
             }
             System.out.println("Category Id:"+categoryId);
             //return categoryId;
-            //insert_id_question_combo();
+
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -328,17 +350,16 @@ public class MainClass extends JFrame implements ItemListener {
             String Cat = (String) category.getSelectedItem();
             try {
 
-                connection();
-                p = c.prepareStatement("select questions.question,categories.category_name from questions,category_question,categories where questions.question_id=category_question.question_id and categories.category_id=category_question.category_id having (categories.category_name)='" + Cat + "'");
+                Connection connection= UtilityFunctions.createConnection();
+                p = connection.prepareStatement("select questions.question,categories.category_name from questions,category_question,categories where questions.question_id=category_question.question_id and categories.category_id=category_question.category_id having (categories.category_name)='" + Cat + "'");
                 r = p.executeQuery();
                 question.removeAllItems();
                 while (r.next()) {
                     String quesname = r.getString("question");
                     question.addItem(quesname);
                 }
-
                 categoryId=getSelectedCategory(Cat);
-                insert_id_question_combo();
+
 
             } catch (Exception e) {
                 System.out.println(e);
@@ -347,82 +368,87 @@ public class MainClass extends JFrame implements ItemListener {
     }
 
     //question id insertion  into Survey_response
-    public void insert_id_question_combo()
+    public int insert_id_question_combo(String question1)
     {
-        maneger.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent event) {
-                if (event.getStateChange() == ItemEvent.SELECTED) {
-                    try {
-                        quenm= (String) question.getSelectedItem();
-                        //System.out.println(mannm);
-                        sqlq = "select question_id from questions where question = '" + quenm + "'";
-                        p = c.prepareStatement(sqlq);
-                        r = p.executeQuery();
-                        while (r.next()) {
-                            idq = r.getInt("question_id");
-                            maneger.addItem(idq);
-                            // System.out.println(id);
-                            //System.out.println(mannm);
-                        }
-                        /*sql1 = "insert into survey_responses (manager_id) values ('"+id+"')";
-                        p = c.prepareStatement(sql1);
-                        p.execute();*/
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
-                }
+        System.out.println("question is: "+question1);
+        /*
+         * question.addItemListener(new ItemListener() { public void
+         * itemStateChanged(ItemEvent event) { if (event.getStateChange() ==
+         * ItemEvent.SELECTED) {
+         */
+        try {
+            quenm= question1;
+
+            Connection connection= UtilityFunctions.createConnection();
+            sqlq = "select question_id from questions where question = '" + question1 + "'";
+            p = connection.prepareStatement(sqlq);
+            r = p.executeQuery();
+            while (r.next()) {
+                idq = (r.getInt("question_id"));
 
             }
-        });
+
+            System.out.println("its id: "+idq);
+
+        } catch (SQLException |ClassNotFoundException  ex) {
+            ex.printStackTrace();
+        }
+        //}
+
+        // }
+        // });
+        return idq;
     }
 
     //Category JCombobox related
     public void category_combo() {
         String catname="";
         try {
-            connection();
-            p = c.prepareStatement("select category_id,category_name from categories");
+
+            Connection connection= UtilityFunctions.createConnection();
+            p = connection.prepareStatement("select category_id,category_name from categories");
             r = p.executeQuery();
 
             while (r.next()) {
                 catname = r.getString("category_name");
                 category.addItem(catname);
             }
-
             insert_id_category_combo();
-            // selectedCategoryName=category.getSelectedItem().toString();
+
         } catch (Exception e) {
             System.out.println(e);
         }
     }
+
     //category id insertion  into Survey_response
-    public void insert_id_category_combo()
+    public int insert_id_category_combo()
     {
-        maneger.addItemListener(new ItemListener() {
+        category.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent event) {
                 if (event.getStateChange() == ItemEvent.SELECTED) {
                     try {
                         catnm= (String) category.getSelectedItem();
                         //System.out.println(mannm);
-                        sqlc = "select category_id from categories where category_name = '" + catnm + "'";
-                        p = c.prepareStatement(sqlc);
+
+                        Connection connection= UtilityFunctions.createConnection();
+                        sqlc = "select category_id from category_question, questions where category_question. question_id =questions.question_id and questions.question='"+quenm+"'";
+
+                        p = connection.prepareStatement(sqlc);
                         r = p.executeQuery();
                         while (r.next()) {
                             idc = r.getInt("category_id");
-                            category.addItem(idc);
-                            // System.out.println(id);
+                            // category.addItem(idc);
+                            System.out.println(idc);
                             //System.out.println(mannm);
                         }
-                        /*sql1 = "insert into survey_responses (manager_id) values ('"+id+"')";
-                        p = c.prepareStatement(sql1);
-                        p.execute();*/
-                    } catch (SQLException ex) {
+                    } catch (SQLException |ClassNotFoundException ex) {
                         ex.printStackTrace();
                     }
                 }
 
             }
         });
+        return idc;
     }
 
 
@@ -431,9 +457,10 @@ public class MainClass extends JFrame implements ItemListener {
     public void maneger_combo()
     {
         try {
-            connection();
+
+            Connection connection= UtilityFunctions.createConnection();
             String sql = "Select username from users where role = 'manager'";
-            p = c.prepareStatement(sql);
+            p = connection.prepareStatement(sql);
             r = p.executeQuery();
             while (r.next()) {
                 String nm = r.getString("username");
@@ -456,19 +483,17 @@ public class MainClass extends JFrame implements ItemListener {
                     try {
                         mannm= (String) maneger.getSelectedItem();
                         System.out.println(mannm);
+
+                        Connection connection= UtilityFunctions.createConnection();
                         sql = "select user_id from users where username = '" + mannm + "'";
-                        p = c.prepareStatement(sql);
+                        p = connection.prepareStatement(sql);
                         r = p.executeQuery();
                         while (r.next()) {
                             id = r.getInt("user_id");
                             maneger.addItem(id);
-                            // System.out.println(id);
-                            //System.out.println(mannm);
                         }
-                        /*sql1 = "insert into survey_responses (manager_id) values ('"+id+"')";
-                        p = c.prepareStatement(sql1);
-                        p.execute();*/
-                    } catch (SQLException ex) {
+
+                    } catch (SQLException |ClassNotFoundException ex) {
                         ex.printStackTrace();
                     }
                 }
@@ -478,12 +503,3 @@ public class MainClass extends JFrame implements ItemListener {
     }
 
 }
-
-
-
-
-
-
-
-
-
