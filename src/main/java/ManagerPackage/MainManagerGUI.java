@@ -12,8 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,8 +19,7 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-public class MainManagerGUI extends JFrame
-{
+public class MainManagerGUI extends JFrame{
     JFrame frame;
     JPanel buttonPanel, topPanel, mainPanel, editPanel, reportPanel;
     JButton View_Report, Edit_Profile;
@@ -35,11 +32,9 @@ public class MainManagerGUI extends JFrame
     JComboBox role_combo;
     JFrame f;
     private JButton reset, update;
-    String Username, Addr, Pno, Rolval, Gval, pwd, Email, Cpwd,gender1,id1,id2;
-    String outputString,inputString,em,nm,pass,phno,rnm,gen,addr,passw;
+    String Username, Addr, Pno, Rolval, pwd, Email,id1,id2;
+    String outputString,inputString,em,nm,pass,phno,rnm,addr,passw;
     PreparedStatement p;
-
-
     String reg = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
     // boolean result = email.matches(reg);
     String REG = "^(?=.*\\d)(?=\\S+$)(?=.*[@#$%^&+=])(?=.*[a-z])(?=.*[A-Z]).{8,10}$";
@@ -103,6 +98,7 @@ public class MainManagerGUI extends JFrame
             {
                 editPanel.setVisible(true);
                 Edit();
+                showdetails();
             }
         });
     }
@@ -217,17 +213,7 @@ public class MainManagerGUI extends JFrame
         reset.setBounds(550, 450, 100, 30);
         reset.setFont(new Font("Verdana", Font.PLAIN, 14));
 
-        tfId.addKeyListener(new KeyListener() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                showdetails();
-            }
-            @Override
-            public void keyReleased(KeyEvent e) { showdetails(); }
-            @Override
-            public void keyTyped(KeyEvent e) {}
 
-        });
         editPanel.add(update);
         update.addActionListener(new ActionListener()        {
             public void actionPerformed(ActionEvent e)
@@ -256,17 +242,9 @@ public class MainManagerGUI extends JFrame
         reportPanel.setBounds(251, 120, 1451, 629);
         reportPanel.setBackground(Color.WHITE);
         reportPanel.setLayout(null);
-
-        JLabel EditTitle = new JLabel("Report");
-        EditTitle.setBounds(500, 10, 100, 20);
-        EditTitle.setVerticalAlignment(SwingConstants.TOP);
-        reportPanel.add(EditTitle);
-
         try {
-
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection= DriverManager.getConnection("jdbc:mysql://localhost:3306/survey_mgmt", "Aress", "Aress@aress123");
-            //reportPanel.setSize(1350,800);
             reportPanel.setBounds(251, 120, 1000, 800);
 
             HashMap para=new HashMap();
@@ -278,7 +256,7 @@ public class MainManagerGUI extends JFrame
             JasperDesign jd= JRXmlLoader.load(in);
 
             String sql;
-            sql = " select survey_responses.emp_id,survey_responses.manager_id,users.username,questions.question,categories.category_name,survey_responses.rating,survey_responses.comment from survey_responses,users,categories,questions where users.user_id=survey_responses.manager_id and categories.category_id=survey_responses.cat_id and questions.question_id=survey_responses.question_id and users.username='harshad'";
+            sql = " select survey_responses.emp_id,survey_responses.manager_id,users.username,questions.question,categories.category_name,survey_responses.rating,survey_responses.comment from survey_responses,users,categories,questions where users.user_id=survey_responses.manager_id and categories.category_id=survey_responses.cat_id and questions.question_id=survey_responses.question_id and users.user_id='"+LoginPage.LOGIN_USERID+"'";
             JRDesignQuery newQuery=new JRDesignQuery();
             newQuery.setText(sql);
             jd.setQuery(newQuery);
@@ -286,30 +264,21 @@ public class MainManagerGUI extends JFrame
             JasperReport jr= JasperCompileManager.compileReport(jd);
             JasperPrint j= JasperFillManager.fillReport(jr, para, connection);
 
-
             JRViewer v = new JRViewer(j);
             reportPanel.setLayout(new BorderLayout());
             reportPanel.add(v);
-
             //JasperViewer.viewReport(j, false);
             FileOutputStream os=new FileOutputStream(new File("D:\\reports\\Manager report.pdf"));
             JasperExportManager.exportReportToPdfStream(j, os);
-
-
         } catch (Exception ae) {
-
             ae.printStackTrace();
-
         }
 
     }
-
-
     public void encryptdecryptpwd(String str) {
         // Define XOR key
         // Any character value will work
         char xorKey = 'P';
-
         // Define String to store encrypted/decrypted String
         outputString = "";
         //inputString = pwd;
@@ -317,14 +286,11 @@ public class MainManagerGUI extends JFrame
         //System.out.println("instr is:"+inputString);
         // calculate length of input string
         int len = inputString.length();
-
         // perform XOR operation of key
         // with every character in string
         for (int i = 0; i < len; i++) {
             outputString = outputString + Character.toString((char) (inputString.charAt(i) ^ xorKey));
         }
-
-        // System.out.println(outputString);
 
     }
     public void getValuefromGui() {
@@ -333,25 +299,18 @@ public class MainManagerGUI extends JFrame
         Pno = tfPhone.getText();
         Addr = tadd.getText();
         Email = tfEmail.getText();
-        if (male.isSelected())
-            Gval = "Male";
-        else if (female.isSelected())
-            Gval = "Female";
         Rolval = role_combo.getSelectedItem().toString();
-
         pwd = String.valueOf(tfPassword.getPassword());
-        // Cpwd = String.valueOf(p2.getPassword());
-
     }
     public void setvaluestogui()    {
         tfId.setText(id2);
+        tfId.setEnabled(false);
         tfName.setText(nm);
         tfPhone.setText(phno);
         tadd.setText(addr);
         tfEmail.setText(em);
-        gender.setText(gen);
         role_combo.setSelectedItem(rnm);
-        System.out.println(rnm);
+        role_combo.setEnabled(false);
         passw=String.valueOf(pass);
         encryptdecryptpwd(passw);
         tfPassword.setText(outputString);
@@ -359,24 +318,9 @@ public class MainManagerGUI extends JFrame
     }
     public void showdetails() {
         getValuefromGui();
-
         try {
-            Connection connection= UtilityFunctions.createConnection();
-           p = connection.prepareStatement("select user_id from users where user_id='" + id1+ "'  and role='manager'  ");
-            ResultSet rs = p.executeQuery();
-
-            while (rs.next()) {
-                id2 = rs.getString("user_id");
-
-                //System.out.println(em);
-
-            }
-
-
-            if(id1.equals(id2))
-            {
-                connection= UtilityFunctions.createConnection();
-                p = connection.prepareStatement("select * from users where user_id='" + id1 + "' and role='manager'   ");
+                Connection connection= UtilityFunctions.createConnection();
+                p = connection.prepareStatement("select * from users where user_id='" + LoginPage.LOGIN_USERID + "' and role='manager'   ");
                 ResultSet rs1 = p.executeQuery();
 
                 while (rs1.next()) {
@@ -386,18 +330,9 @@ public class MainManagerGUI extends JFrame
                     pass = rs1.getString("password");
                     phno = rs1.getString("phno");
                     rnm = rs1.getString("role");
-                    System.out.println(rnm);
 
                     setvaluestogui();
-
-                    /* System.out.println(nm + "\t\t" + em
-                            + "\t\t"+"   " + pass + "\t\t " + phno+"\t\t"+"  "+rnm+"\t\t"+"  "+gen+"\t\t"+"  "+addr);*/
-
                 }
-
-            }
-
-
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -407,52 +342,33 @@ public class MainManagerGUI extends JFrame
         getValuefromGui();
         System.out.println("pwd is:"+pwd);
         if (PATTERN.matcher(pwd).matches()) {
-            System.out.print("The Password " + pwd + " is valid" + "\n");
-
             if (Email.matches(reg)) {
-                System.out.println("Given email-id is valid");
-
                 if (Pno.matches("\\d{10}")) {
-                    System.out.println("Valid Mobile NO");
-
-
                     try {
                         Connection connection= UtilityFunctions.createConnection();
                         encryptdecryptpwd(pwd);
                         String up = "update users set username='" + tfName.getText() + "',email='" + tfEmail.getText() + "' ,password='" + outputString + "',phno='" + tfPhone.getText()+ "' where user_id='" +  tfId.getText() + "' ";
                         p = connection.prepareStatement(up);
                         p.execute();
-                        JOptionPane.showMessageDialog(f,
-                                "User Details Updated Successfully");
-                        System.out.println("Record updated Successfully ");
+                        JOptionPane.showMessageDialog(f,"User Details Updated Successfully");
                         editPanel.setVisible(false);
-
-
                     } catch (SQLException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    JOptionPane.showMessageDialog(f, "Please Enter Correct Mobile no",
-                            "Check Password", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(f, "Please Enter Valid Mobile no","Check Password", JOptionPane.ERROR_MESSAGE);
                 }
-
             } else {
-                JOptionPane.showMessageDialog(f, "Please Enter Correct Email ID",
-                        "Check Password", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(f, "Please Enter Valid Email ID","Check Password", JOptionPane.ERROR_MESSAGE);
             }
-
-
-
         } else {
-            JOptionPane.showMessageDialog(f, "Please enter correct Password",
-                    "Check Password", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(f, "Please enter correct Password","Check Password", JOptionPane.ERROR_MESSAGE);
         }
-
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         new MainManagerGUI();
-    }
+    }*/
 
 
 

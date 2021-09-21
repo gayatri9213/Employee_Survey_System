@@ -16,7 +16,9 @@ import java.sql.*;
 
 import static com.util.UtilityFunctions.encryptDecrypt;
 
-public class LoginPage implements InitiateComponents
+public class
+
+LoginPage implements InitiateComponents
 {
 
 private JFrame loginFrame;
@@ -29,7 +31,7 @@ private PreparedStatement preparedStatement;
 private ResultSet roleNameFetching;
 public JFrame queFrame;
 public JFrame frame;
-public static String LOGINUSERNAME="";
+public static int LOGIN_USERID=0;
 
 
 
@@ -98,7 +100,8 @@ public void initComponents(){
 
     private void exitButtonActionListener()
     {
-        int a=JOptionPane.showConfirmDialog(loginPagePanel,"Are you sure ?","Warning",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+        int a=JOptionPane.showConfirmDialog(loginPagePanel,"Are you sure ?","Exit" +
+                "",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
         if(a==JOptionPane.YES_OPTION)
         {
             System.exit(0);
@@ -117,12 +120,12 @@ public void initComponents(){
             Connection connection= UtilityFunctions.createConnection();
 
             String username = userNameField.getText();
-            LOGINUSERNAME=username;
+
 
             String password= UtilityFunctions.encryptDecrypt( new String(passwordField.getPassword()));
 
 
-            preparedStatement = connection.prepareStatement("select role from users where username= ? and password= ?");
+            preparedStatement = connection.prepareStatement("select role,user_id from users where username= ? and password= ?");
             preparedStatement.setString(1,username);
             preparedStatement.setString(2,password);
 
@@ -131,8 +134,9 @@ public void initComponents(){
 
             if(roleNameFetching.next())
             {
-                    String role_name= roleNameFetching.getString(1);
+                    String role_name= roleNameFetching.getString("role");
                     System.out.println(role_name);
+                    LOGIN_USERID=roleNameFetching.getInt("user_id");
                     if(role_name.equalsIgnoreCase("admin"))
                     {
                         MainAdminGUI mainAdminGUI=new MainAdminGUI();
@@ -155,7 +159,7 @@ public void initComponents(){
             }
             else
             {
-                JOptionPane.showMessageDialog(loginPagePanel,"Enter Valid username and password","ERROR",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(loginPagePanel,"Enter Valid username and password","Invalid Login",JOptionPane.ERROR_MESSAGE);
 
             }
         }
