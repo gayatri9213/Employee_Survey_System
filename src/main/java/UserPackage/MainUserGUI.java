@@ -6,66 +6,67 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
 import LoginPage.LoginPage;
 import com.buttons.AllUserInputButtons;
 import com.framesAndPanels.AllFramesAndPanels;
 import com.labels.AllLabels;
+
+// Utility Class
 import static com.util.UtilityFunctions.createConnection;
+
 /*
 * @Author: Mayur Pardeshi
 * */
-public class MainUserGUI extends JFrame implements ActionListener, ItemListener {
+
+
+
+public class MainUserGUI extends JFrame {
+
     ArrayList<Responses> fetch = new ArrayList<Responses>();
 
+    // constant width and height for radio buttons
     final int RADIOY =120, RADIOW =100, RADIOH = 40;
 
     private int categoryId,catId;
-    int resp,secResp,thirdResp,fourthResp,fifthResp;
-    static int selectedItem;
+    private int resp,secResp,thirdResp,fourthResp,fifthResp;
+    private static int selectedItem;
     private String categoryName,publishDate,closeDate,createDate;
     Connection con = createConnection();
 
+    private JButton feedbackButton,nextButton,secondNextButton,thirdNextButton,fourthNextButton,fifthNextButton,submitButton;
+    private JPanel mainPanel,secondPanel,thirdPanel,fourthPanel,fifthPanel,topPanel,bottomPanel,buttonPanel,commentPanel;
+    private JLabel publishDateLabel,closeDateLabel;
+    private JTextField commentArea;
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-    }
-
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-    }
-
-    public JButton feedbackButton,nextButton,secondNextButton,thirdNextButton,fourthNextButton,fifthNextButton,submitButton;
-    public JPanel mainPanel,secondPanel,thirdPanel,fourthPanel,fifthPanel,topPanel,bottomPanel,buttonPanel,commentPanel;
-    public JLabel publishDateLabel,closeDateLabel;
-    public JTextField commentArea;
-
-    JRadioButton respOne,respTwo,respThree,respFive,respFour;
-    public JComboBox categoryCombo;
-    public JFrame queFrame;
-    ButtonGroup group;
+    private JRadioButton respOne,respTwo,respThree,respFive,respFour;
+    private JComboBox categoryCombo;
+    private JFrame queFrame;
+    private ButtonGroup group;
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         new MainUserGUI();
     }
 
     public MainUserGUI() throws ClassNotFoundException, SQLException {
+
+        // Creating Objects of Frame, panel class
         AllUserInputButtons userInputButtonsCallingObj = new AllUserInputButtons();
         AllFramesAndPanels userFramesAndPanelsObj = new AllFramesAndPanels();
         AllLabels labelsObj = new AllLabels();
 
+        // initializing radio buttons
         respOne = new JRadioButton("Poor");
         respTwo=new JRadioButton("Average");
         respThree=new JRadioButton("Good");
         respFour=new JRadioButton("Very Good");
         respFive=new JRadioButton("Outstanding");
 
+        // radio button
         String selected = "-- SELECTED --";
         categoryCombo = new JComboBox();
         categoryCombo.addItem(selected);
@@ -74,7 +75,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
         categoryCombo.setSize(50, 50);
         categoryCombo.setBounds(10, 10, 200, 25);
 
-        // Frames and panels code
+        // Frames and panels
         queFrame = userFramesAndPanelsObj.putFrame();
         mainPanel = userFramesAndPanelsObj.putMainPanel();
         commentPanel = userFramesAndPanelsObj.putCommentPanel();
@@ -86,7 +87,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
         bottomPanel = userFramesAndPanelsObj.putBottomPanel();
         buttonPanel = userFramesAndPanelsObj.putButtonPanel();
 
-        // Buttons Code
+        // Buttons
         feedbackButton = userInputButtonsCallingObj.putFeedbackButton();
         nextButton = userInputButtonsCallingObj.putNextButton();
         secondNextButton=userInputButtonsCallingObj.putSecondButton() ;
@@ -95,7 +96,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
         fifthNextButton=userInputButtonsCallingObj.putFifthButton();
         submitButton = userInputButtonsCallingObj.putSubmitButton();
 
-        // Labels Code
+        // Labels
         publishDateLabel = labelsObj.putPublishDate();
         closeDateLabel = labelsObj.putCloseDate();
 
@@ -145,10 +146,12 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                         ResultSet fetchId,publishAndCloseDate;
                         ResultSet fetchQuestions;
 
+                        // fetch category_id based on option selected on the combobox
                         fetchId = con.createStatement().executeQuery("select category_id from categories where category_name = '" + (String) categoryCombo.getSelectedItem() + "'");
                         fetchId.next();
                         catId = fetchId.getInt(1);
 
+                        // fetch questions based on option selected on combobx and store into the ArrayList
                         fetchQuestions = con.createStatement().executeQuery("select questions.question_id,questions.question from questions join category_question on (questions.question_id=category_question.question_id) join survey_responses on (survey_responses.question_id = category_question.question_id) where cat_id = '" + catId + "'  ");
                         while (fetchQuestions.next()) {
                             Responses respOne = new Responses();
@@ -164,6 +167,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                         publishDate = publishAndCloseDate.getString(2);
                         closeDate = publishAndCloseDate.getString(3);
 
+                        //Add question, question_id and radio buttons on the panel
                         JTextField publishDateField = new JTextField();
                         publishDateField.setBounds(100,17,100,20);
                         publishDateField.setText(publishDate);
@@ -178,7 +182,6 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                         closeDateField.setVisible(true);
                         topPanel.add(closeDateField);
 
-                       // ArrayList<BeanClass> bean = new ArrayList<>();
                         JTextField textFieldId = new JTextField();
                         textFieldId.setBounds(30,50,100,RADIOH);
                         textFieldId.setText(String.valueOf(fetch.get(0).getFetchedQuestionId()));
@@ -223,6 +226,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                 secondPanel.setVisible(true);
                 mainPanel.setVisible(false);
 
+                //Add question, question_id and radio buttons on the panel
                 JTextField textFieldId = new JTextField();
                 textFieldId.setBounds(30,50,100,RADIOH);
                 textFieldId.setText(String.valueOf(fetch.get(1).getFetchedQuestionId()));
@@ -256,22 +260,19 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
 
                 if (respOne.isSelected()){
                     resp = 1;
-                    System.out.println(resp);
                 } else if (respTwo.isSelected()) {
                     resp= 2;
-                    System.out.println(resp);
                 }else if (respThree.isSelected()) {
                     resp= 3;
-                    System.out.println(resp);
                 } else if (respFour.isSelected()) {
                     resp= 4;
-                    System.out.println(resp);
                 } else if(respFive.isSelected()){
                     resp= 5;}
 
                 int qIdOne=fetch.get(0).getFetchedQuestionId();
 
                 try {
+                    //   CHECK IF emp_id and question_id COMBINATION ALREADY AVAILABLE UPDATE RESPONSE, OTHERWISE INSERT DATA
                     con.createStatement().execute(" INSERT INTO survey_responses (emp_id,question_id,cat_id,rating,creation_date,publish_date,close_date) VALUES ('"+LoginPage.LOGIN_USERID+"' , '"+qIdOne+"' , '"+catId+"' , '"+resp+"' , '"+createDate+"', '"+publishDate+"' , '"+closeDate+"') ON  DUPLICATE KEY UPDATE rating = '"+resp+"'") ;
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -285,6 +286,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                 thirdPanel.setVisible(true);
                 secondPanel.setVisible(false);
 
+                //Add question, question_id and radio buttons on the panel
                 JTextField textFieldId = new JTextField();
                 textFieldId.setBounds(30,50,100,RADIOH);
                 textFieldId.setText(String.valueOf(fetch.get(2).getFetchedQuestionId()));
@@ -318,22 +320,19 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
 
                 if (respOne.isSelected()){
                     secResp= 1;
-                    System.out.println(resp);
                 } else if (respTwo.isSelected()) {
                     secResp= 2;
-                    System.out.println(resp);
                 }else if (respThree.isSelected()) {
                     secResp= 3;
-                    System.out.println(resp);
                 } else if (respFour.isSelected()) {
                     secResp= 4;
-                    System.out.println(resp);
                 } else if(respFive.isSelected()){
                     secResp= 5;}
 
                 int qIdTwo=fetch.get(1).getFetchedQuestionId();
 
                 try {
+                    //   CHECK IF emp_id and question_id COMBINATION ALREADY AVAILABLE UPDATE RESPONSE, OTHERWISE INSERT DATA
                     con.createStatement().execute(" INSERT INTO survey_responses (emp_id,question_id,cat_id,rating,creation_date,publish_date,close_date) VALUES ('"+LoginPage.LOGIN_USERID+"' , '"+qIdTwo+"' , '"+catId+"' , '"+secResp+"' ,'"+createDate+"' ,'"+publishDate+"' , '"+closeDate+"') ON  DUPLICATE KEY UPDATE rating = '"+secResp+"'");
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -348,6 +347,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                 fourthPanel.setVisible(true);
                 thirdPanel.setVisible(false);
 
+                //Add question, question_id and radio buttons on the panel
                 JTextField textFieldId = new JTextField();
                 textFieldId.setBounds(30,50,100,RADIOH);
                 textFieldId.setText(String.valueOf(fetch.get(3).getFetchedQuestionId()));
@@ -381,21 +381,18 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
 
                 if (respOne.isSelected()){
                     thirdResp= 1;
-                    System.out.println(resp);
                 } else if (respTwo.isSelected()) {
                     thirdResp= 2;
-                    System.out.println(resp);
                 }else if (respThree.isSelected()) {
                     thirdResp= 3;
-                    System.out.println(resp);
                 } else if (respFour.isSelected()) {
                     thirdResp= 4;
-                    System.out.println(resp);
                 } else if(respFive.isSelected()){
                     thirdResp= 5;}
 
                 int qIdThree=fetch.get(2).getFetchedQuestionId();
                 try {
+                    //   CHECK IF emp_id and question_id COMBINATION ALREADY AVAILABLE UPDATE RESPONSE, OTHERWISE INSERT DATA
                     con.createStatement().execute(" INSERT INTO survey_responses (emp_id,question_id,cat_id,rating,creation_date,publish_date,close_date) VALUES ('"+LoginPage.LOGIN_USERID+"' , '"+qIdThree+"' , '"+catId+"' , '"+thirdResp+"' , '"+createDate+"', '"+publishDate+"' , '"+closeDate+"') ON  DUPLICATE KEY UPDATE rating = '"+thirdResp+"'") ;
                      } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -410,6 +407,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                 fifthPanel.setVisible(true);
                 fourthPanel.setVisible(false);
 
+                //Add question, question_id and radio buttons on the panel
                 JTextField textFieldId = new JTextField();
                 textFieldId.setBounds(30,50,100,RADIOH);
                 textFieldId.setText(String.valueOf(fetch.get(4).getFetchedQuestionId()));
@@ -443,21 +441,18 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
 
                 if (respOne.isSelected()){
                     fourthResp= 1;
-                    System.out.println(resp);
                 } else if (respTwo.isSelected()) {
                     fourthResp= 2;
-                    System.out.println(resp);
                 }else if (respThree.isSelected()) {
                     fourthResp= 3;
-                    System.out.println(resp);
                 } else if (respFour.isSelected()) {
                     fourthResp= 4;
-                    System.out.println(resp);
                 } else if(respFive.isSelected()){
                     fourthResp= 5;}
 
                 int qIdFour=fetch.get(3).getFetchedQuestionId();
                 try {
+                    //   CHECK IF emp_id and question_id COMBINATION ALREADY AVAILABLE UPDATE RESPONSE, OTHERWISE INSERT DATA
                     con.createStatement().execute(" INSERT INTO survey_responses (emp_id,question_id,cat_id,rating,creation_date,publish_date,close_date) VALUES ('"+LoginPage.LOGIN_USERID+"' , '"+qIdFour+"' , '"+catId+"' , '"+fourthResp+"' , '"+createDate+"' , '"+publishDate+"' , '"+closeDate+"') ON  DUPLICATE KEY UPDATE rating = '"+fourthResp+"'") ;
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -471,6 +466,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                 fifthPanel.setVisible(true);
                 fourthPanel.setVisible(false);
 
+                //Add question, question_id and radio buttons on the panel
                 JTextField textFieldId = new JTextField();
                 textFieldId.setBounds(30,50,100,RADIOH);
                 textFieldId.setText(String.valueOf(fetch.get(4).getFetchedQuestionId()));
@@ -503,28 +499,24 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
 
                 if (respOne.isSelected()){
                     fifthResp= 1;
-                    System.out.println(resp);
                 } else if (respTwo.isSelected()) {
                     fifthResp= 2;
-                    System.out.println(resp);
                 }else if (respThree.isSelected()) {
                     fifthResp= 3;
-                    System.out.println(resp);
                 } else if (respFour.isSelected()) {
                     fifthResp= 4;
-                    System.out.println(resp);
                 } else if(respFive.isSelected()){
                     fifthResp= 5;}
 
                 int qIdFive=fetch.get(4).getFetchedQuestionId();
                 try {
+                    //   CHECK IF emp_id and question_id COMBINATION ALREADY AVAILABLE UPDATE RESPONSE, OTHERWISE INSERT DATA
                     con.createStatement().execute(" INSERT INTO survey_responses (emp_id,question_id,cat_id,rating,creation_date,publish_date,close_date) VALUES ('"+LoginPage.LOGIN_USERID+"' , '"+qIdFive+"' , '"+catId+"' , '"+fifthResp+"' , '"+createDate+"' , '"+publishDate+"' , '"+closeDate+"') ON  DUPLICATE KEY UPDATE rating = '"+fifthResp+"'") ;
-
-                    //    con.createStatement().execute(" INSERT INTO survey_responses (emp_id,question_id,cat_id,rating,creation_date,publish_date,close_date) VALUES ('"+LoginPage.LOGIN_USERID+"' , '"+qIdFive+"' , '"+catId+"' , '"+fifthResp+"' , '"+createDate+"''"+publishDate+"' , '"+closeDate+"') ON  DUPLICATE KEY UPDATE rating = '"+fifthResp+"'") ;
                     ResultSet avgRating = con.createStatement().executeQuery("select avg(rating) from survey_responses where emp_id = '"+LoginPage.LOGIN_USERID+"'");
                     avgRating.next();
                         int average = avgRating.getInt(1);
 
+                    // CHECK IF RATING IS LESS THAN 3 GO TO THE NEXT PANEL,OTHERWISE SUBMIT RESPONSE
                     if(average < 3){
                         fifthPanel.setVisible(false);
                         commentPanel.setVisible(true);
@@ -557,6 +549,8 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
             public void actionPerformed(ActionEvent e) {
                 String comments = commentArea.getText();
                 try {
+                    // store comment in table for selected category ID
+
                     con.createStatement().execute(" UPDATE survey_responses SET comment = '"+comments+"' WHERE emp_id = '"+LoginPage.LOGIN_USERID+"' ");
                     JOptionPane.showMessageDialog(fifthPanel,"Your Response is Submitted Successfully");
                     mainPanel.setVisible(true);
@@ -574,8 +568,10 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
         LocalDateTime now = LocalDateTime.now();
         String currentDate = dateFormat.format(now);
         ResultSet fetchCategory;
+
         try {
-            Connection con = createConnection();
+
+            // Code for adding disting category name (within given date) in combobox
 
             ResultSet fetchCategoryId = con.createStatement().executeQuery("select distinct cat_id from survey_responses where '" + currentDate + "' between publish_date and close_date;");
             while (fetchCategoryId.next()) {
@@ -586,8 +582,6 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                     categoryCombo.addItem(categoryName);
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
