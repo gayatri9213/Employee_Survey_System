@@ -15,33 +15,30 @@ import java.util.regex.Pattern;
 public class Createuser extends JFrame implements ActionListener {
 
 
-    String userstatus;
+
 
     JPasswordField p1, p2;
-    JPanel panel1;
-    JLabel title, IDLabel, NameLabel, PhnoLabel, RoleLabel, gender, AddressLabel, Password, Confirmpass, EmailLabel;
-    JTextArea Add;
-    JTextField ID, Namet, Phno, Role, Email;
-    JRadioButton male, female;
+    JLabel title, NameLabel, PhnoLabel, RoleLabel, Password, Confirmpass, EmailLabel;
+    JTextField Namet, Phno,Email;
     JComboBox Rolecb;
     JFrame f;
     JPanel panel;
-    private JButton sub, reset, cancel, btn;
+    private JButton sub, reset;
 
-    String Username, Addr, Pno, Rolval, Gval, pwd, email, Cpwd;
-    String outputString, inputString;
+    String Username, Pno, Rolval,pwd, email, Cpwd;
+    String outputString;
 
 
     PreparedStatement p;
-    Connection conn;
 
 
+    // Regex for Email validation
     String reg = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
-    // boolean result = email.matches(reg);
+
+    //Regex for Phone number validation
     String REG = "^(?=.*\\d)(?=\\S+$)(?=.*[@#$%^&+=])(?=.*[a-z])(?=.*[A-Z]).{8,10}$";
     final Pattern PATTERN = Pattern.compile(REG);
-    private String Null;
-    private String NUll;
+
 
 
 
@@ -96,9 +93,8 @@ public class Createuser extends JFrame implements ActionListener {
         sub.setBounds(100, 450, 100, 30);
         reset = new JButton("Reset");
         reset.setBounds(250, 450, 100, 30);
-        // cancel = new JButton("Cancel");
-        // cancel.setBounds(400, 600, 100, 30);
 
+        //add all components on Panel
         panel.add(title);
         panel.add(NameLabel);
         panel.add(Namet);
@@ -122,18 +118,19 @@ public class Createuser extends JFrame implements ActionListener {
         f.setSize(700, 700);
         f.setLayout(null);
         f.setVisible(true);
-        //   f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
 
 
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == sub) {
-
+            // if Submit button is click then call insert() method to store All user details
             insert();
 
 
         } else if (event.getSource() == reset) {
+
+            // if Reset button is click then reset All entered values.
             Rolecb.setSelectedIndex(0);
 
             Email.setText("");
@@ -155,18 +152,22 @@ public class Createuser extends JFrame implements ActionListener {
 
 
     public void insert() {
+       //get values from GUI to store data into user table
 
         getValuefromGui();
 
-
+         //condition for checking entered password Acccording to regex or not
         if (PATTERN.matcher(pwd).matches()) {
             System.out.print("The Password " + pwd + " is valid" + "\n");
 
+            //Condition for checking password is same as confirm password or not
             if (pwd.equals(Cpwd)) {
 
+                //Condition for checking entered Email Acccording to regex or not
                 if (email.matches(reg)) {
                     System.out.println("Given email-id is valid");
 
+                    //Condition for checking entered Phone Acccording to regex or not
                     if (Pno.matches("\\d{10}")) {
                         System.out.println("Valid Mobile NO");
 
@@ -175,8 +176,10 @@ public class Createuser extends JFrame implements ActionListener {
 
 
                             Connection connection= UtilityFunctions.createConnection();
+                            //call encryptDecrypt() to encrpt entered password
                             outputString=UtilityFunctions.encryptDecrypt(pwd);
 
+                            //if all regex get matched the insert user details into user table
                             String query = "insert into users (username,email,role,phno,password)  values('" + Username + "','" + email + "','" + Rolval + "','" +
 
                                     Pno + "','" + outputString + "')";
@@ -227,6 +230,7 @@ public class Createuser extends JFrame implements ActionListener {
 
     public void getValuefromGui() {
 
+        //this method is use for getting values from GUI
         Username = Namet.getText();
         Pno = Phno.getText();
 
@@ -247,6 +251,7 @@ public class Createuser extends JFrame implements ActionListener {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException
     {
+        //use object to call Constructor
         Createuser e=new Createuser();
 
 

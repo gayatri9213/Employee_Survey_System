@@ -25,17 +25,17 @@ public class Editprofile extends JFrame implements ActionListener {
     JComboBox Rolecb;
     JFrame f;
     JPanel panel;
-    private JButton  deleteb,reset, update;
+    private JButton reset, update;
 
-    String Username,  Pno, Rolval, Gval, pwd, email;
+    String Username,  Pno, Rolval, pwd, email;
     String outputString,em,nm,pass,phno,rnm,passw;
 
-
     PreparedStatement p;
-    Connection conn;
 
+    // Regex for Email validation
     String reg = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
-    // boolean result = email.matches(reg);
+
+    //Regex for Phone number validation
     String REG = "^(?=.*\\d)(?=\\S+$)(?=.*[@#$%^&+=])(?=.*[a-z])(?=.*[A-Z]).{8,10}$";
     final Pattern PATTERN = Pattern.compile(REG);
 
@@ -77,13 +77,14 @@ public class Editprofile extends JFrame implements ActionListener {
         p1 = new JPasswordField();
         p1.setBounds(300, 270, 200, 30);
 
-        ;
+
         update= new JButton("Update");
         update.setBounds(150, 400, 100, 30);
 
         reset = new JButton("Reset");
         reset.setBounds(300, 400, 100, 30);
 
+        //add all components on Panel
         panel.add(NameLabel);
         panel.add(Namet);
         panel.add(RoleLabel);
@@ -98,10 +99,11 @@ public class Editprofile extends JFrame implements ActionListener {
         panel.add(p1);
 
 
-
+         //use keylistener on Email textfield to check Entered Email id is available in table or not
         Email.addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {
+                //if Email is available in user table then get data of that Email id from user table and show on GUI
                 showdetails();
             }
             @Override
@@ -110,6 +112,7 @@ public class Editprofile extends JFrame implements ActionListener {
             public void keyTyped(KeyEvent e) {}
 
         });
+
         panel.add(update);
         update.addActionListener(this);
 
@@ -121,7 +124,7 @@ public class Editprofile extends JFrame implements ActionListener {
         f.setSize(700, 700);
         f.setLayout(null);
         f.setVisible(true);
-        // f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 
     }
 
@@ -130,12 +133,14 @@ public class Editprofile extends JFrame implements ActionListener {
 
         if(event.getSource()==update)
         {
+            //if update button is click then call updatemethod() method to update All user details
             updatemethod();
         }
 
 
         else if(event.getSource()==reset)
         {
+            // if Reset button is click then reset All values.
             Rolecb.setSelectedIndex(0);
 
             Email.setText("");
@@ -155,6 +160,7 @@ public class Editprofile extends JFrame implements ActionListener {
 
     public void getValuefromGui() {
 
+        //this method is use for getting values from GUI
         Username = Namet.getText();
         Pno = Phno.getText();
 
@@ -170,35 +176,42 @@ public class Editprofile extends JFrame implements ActionListener {
     }
     public void setvaluestogui()
     {
+        //this method is use for setting the values to GUI
         Namet.setText(nm);;
         Phno.setText(phno);
-
         Email.setText(em);
         Rolecb.setSelectedItem(rnm);
-
         passw=String.valueOf(pass);
+
+        //use encryptDecrypt() to decrypt encrypted password
         outputString=UtilityFunctions.encryptDecrypt(passw);
+        //set encrypted password to password textfield
         p1.setText(outputString);
 
     }
 
     public void showdetails() {
+
+
         getValuefromGui();
 
         try {
             Connection connection= UtilityFunctions.createConnection();
+            //get specified(from Email textfield) Email id from usertable
             p = connection.prepareStatement("select email from users where email='" + email+ "'    ");
             ResultSet rs = p.executeQuery();
 
             while (rs.next()) {
+
                 em = rs.getString("email");
 
                 System.out.println(em);
 
             }
+            //condition for checking given email id available in usertable
             if(email.equals(em))
             {
-
+                //if available then get all data of that email id from user table
                 p = connection.prepareStatement("select * from users where email='" + email + "'    ");
                 ResultSet rs1 = p.executeQuery();
 
@@ -211,9 +224,6 @@ public class Editprofile extends JFrame implements ActionListener {
 
 
                     setvaluestogui();
-
-
-
                 }
 
             }
@@ -226,24 +236,29 @@ public class Editprofile extends JFrame implements ActionListener {
 
     public void updatemethod()
     {
+        //get all values from GUI after getting all records of particulat Email id
         getValuefromGui();
         System.out.println("pwd is:"+pwd);
+
+        //condition for checking entered password Acccording to regex or not
         if (PATTERN.matcher(pwd).matches()) {
             System.out.print("The Password " + pwd + " is valid" + "\n");
 
-            // if(pwd.equals(Cpwd)) {
-
+            //Condition for checking entered Email Acccording to regex or not
             if (email.matches(reg)) {
                 System.out.println("Given email-id is valid");
 
+                //Condition for checking entered Phone Acccording to regex or not
                 if (Pno.matches("\\d{10}")) {
                     System.out.println("Valid Mobile NO");
 
 
                     try {
                         Connection connection= UtilityFunctions.createConnection();
+                        //call encryptDecrypt() to encrpt entered password
                         outputString=UtilityFunctions.encryptDecrypt(pwd);
-                        //encryptdecryptpwd(pwd);
+
+                        //if all regex get matched the update user details from user table
                         String up = "update users set username='" + Namet.getText() + "',email='" + Email.getText() + "' ,role='" + Rolecb.getSelectedItem().toString() + "',phno='" + Phno.getText() + "',password='" + outputString + "' where email='" +  Email.getText() + "' ";
                         p = connection.prepareStatement(up);
                         p.execute();
@@ -266,11 +281,6 @@ public class Editprofile extends JFrame implements ActionListener {
                         "Check Email ID", JOptionPane.ERROR_MESSAGE);
             }
 
-           /* } else {
-                System.out.println("password not matched");
-                JOptionPane.showMessageDialog(f, "Password not match to Confirm Password",
-                        "Confirm Password", JOptionPane.ERROR_MESSAGE);
-            }*/
 
 
         } else {
@@ -282,6 +292,7 @@ public class Editprofile extends JFrame implements ActionListener {
 
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        //use object to call Constructor
         Editprofile e=new Editprofile();
 
 

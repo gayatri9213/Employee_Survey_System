@@ -37,19 +37,6 @@ public class MainAdminGUI extends JFrame {
 
 
 
-
-
-
-
-
-
-    String reg = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
-    // boolean result = email.matches(reg);
-    String REG = "^(?=.*\\d)(?=\\S+$)(?=.*[@#$%^&+=])(?=.*[a-z])(?=.*[A-Z]).{8,10}$";
-    final Pattern PATTERN = Pattern.compile(REG);
-
-
-
     public MainAdminGUI ()
     {
         frame = new JFrame("Admin Module");
@@ -124,6 +111,7 @@ public class MainAdminGUI extends JFrame {
         Create.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
+                    // call createuser()
                     Createu();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -137,6 +125,7 @@ public class MainAdminGUI extends JFrame {
                     public void actionPerformed(ActionEvent e) {
 
                         try {
+                            // call EditProfile()
                             Editu();
                         } catch (SQLException ex) {
                             ex.printStackTrace();
@@ -166,6 +155,7 @@ public class MainAdminGUI extends JFrame {
         Createsurvey.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
+                    // call Survey class
                     survey();
                 } catch (SQLException |ClassNotFoundException ex) {
                     ex.printStackTrace();
@@ -176,39 +166,39 @@ public class MainAdminGUI extends JFrame {
 
         Report1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                // call report method to show all manager reports
                 Report();
             }
         });
 
 
 
-        Createsurvey.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
 
-
-            }
-        });
 
 
     }
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
+
         MainAdminGUI gui = new MainAdminGUI();
 
     }
 
 
     public void Createu() throws SQLException, ClassNotFoundException {
+        // call create user class
         Createuser cu=new Createuser();
 
 
     }
 
     public void Editu() throws SQLException, ClassNotFoundException {
+         // call editprofile class
         Editprofile ep=new Editprofile();
 
     }
 
     public void survey() throws SQLException, ClassNotFoundException {
+        // call createsurvey class
         MainClass s = new MainClass();
 
     }
