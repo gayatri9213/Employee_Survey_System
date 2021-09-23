@@ -1,5 +1,8 @@
 package UserPackage;
 
+// BEAN CLASS
+
+
 public class Responses {
     private int fetchedQuestionId;
     private String fetchedQuestion;
@@ -27,14 +30,6 @@ public class Responses {
 
     public void setFetchedQuestion(String fetchedQuestion) {
         this.fetchedQuestion = fetchedQuestion;
-    }
-
-    public float getRating() {
-        return rating;
-    }
-
-    public void setRating(float rating) {
-        this.rating = rating;
     }
 
     @Override
