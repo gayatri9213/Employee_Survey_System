@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
     private int categoryId,catId;
     int resp,secResp,thirdResp,fourthResp,fifthResp;
     static int selectedItem;
-    private String categoryName;
+    private String categoryName,publishDate,closeDate,createDate;
     Connection con = createConnection();
 
 
@@ -155,10 +156,11 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                         }
 
                         ///// DISPLAY PUBLISH AND CLOSE DATE ON TOP OF THE PANEL
-                        publishAndCloseDate = con.createStatement().executeQuery("select publish_date,close_date from survey_responses where cat_id = '"+catId+"'");
+                        publishAndCloseDate = con.createStatement().executeQuery("select creation_date,publish_date,close_date from survey_responses where cat_id = '"+catId+"'");
                         publishAndCloseDate.next();
-                            String publishDate = publishAndCloseDate.getString(1);
-                            String closeDate = publishAndCloseDate.getString(2);
+                        createDate=publishAndCloseDate.getString(1);
+                        publishDate = publishAndCloseDate.getString(2);
+                        closeDate = publishAndCloseDate.getString(3);
 
                         JTextField publishDateField = new JTextField();
                         publishDateField.setBounds(100,17,100,20);
@@ -268,7 +270,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                 int qIdOne=fetch.get(0).getFetchedQuestionId();
 
                 try {
-                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+ LoginPage.LOGIN_USERID +"',rating = '"+resp+"',comment = 'none' WHERE question_id= '"+qIdOne+"'");
+                    con.createStatement().execute(" INSERT INTO survey_responses (emp_id,question_id,cat_id,rating,creation_date,publish_date,close_date) VALUES ('"+LoginPage.LOGIN_USERID+"' , '"+qIdOne+"' , '"+catId+"' , '"+resp+"' , '"+createDate+"', '"+publishDate+"' , '"+closeDate+"') ON  DUPLICATE KEY UPDATE rating = '"+resp+"'") ;
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -330,7 +332,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                 int qIdTwo=fetch.get(1).getFetchedQuestionId();
 
                 try {
-                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+ LoginPage.LOGIN_USERID +"',rating = '"+secResp+"',comment = 'none' WHERE question_id= '"+qIdTwo+"'");
+                    con.createStatement().execute(" INSERT INTO survey_responses (emp_id,question_id,cat_id,rating,creation_date,publish_date,close_date) VALUES ('"+LoginPage.LOGIN_USERID+"' , '"+qIdTwo+"' , '"+catId+"' , '"+secResp+"' ,'"+createDate+"' ,'"+publishDate+"' , '"+closeDate+"') ON  DUPLICATE KEY UPDATE rating = '"+secResp+"'");
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -392,8 +394,8 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
 
                 int qIdThree=fetch.get(2).getFetchedQuestionId();
                 try {
-                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+ LoginPage.LOGIN_USERID +"',rating = '"+thirdResp+"',comment = 'none' WHERE question_id= '"+qIdThree+"'");
-                } catch (SQLException ex) {
+                    con.createStatement().execute(" INSERT INTO survey_responses (emp_id,question_id,cat_id,rating,creation_date,publish_date,close_date) VALUES ('"+LoginPage.LOGIN_USERID+"' , '"+qIdThree+"' , '"+catId+"' , '"+thirdResp+"' , '"+createDate+"', '"+publishDate+"' , '"+closeDate+"') ON  DUPLICATE KEY UPDATE rating = '"+thirdResp+"'") ;
+                     } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
 
@@ -454,7 +456,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
 
                 int qIdFour=fetch.get(3).getFetchedQuestionId();
                 try {
-                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+ LoginPage.LOGIN_USERID +"',rating = '"+fourthResp+"',comment = 'none' WHERE question_id= '"+qIdFour+"'");
+                    con.createStatement().execute(" INSERT INTO survey_responses (emp_id,question_id,cat_id,rating,creation_date,publish_date,close_date) VALUES ('"+LoginPage.LOGIN_USERID+"' , '"+qIdFour+"' , '"+catId+"' , '"+fourthResp+"' , '"+createDate+"' , '"+publishDate+"' , '"+closeDate+"') ON  DUPLICATE KEY UPDATE rating = '"+fourthResp+"'") ;
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -514,8 +516,9 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
 
                 int qIdFive=fetch.get(4).getFetchedQuestionId();
                 try {
-                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+ LoginPage.LOGIN_USERID +"',rating = '"+fifthResp+"',comment = 'none' WHERE question_id= '"+qIdFive+"'");
+                    con.createStatement().execute(" INSERT INTO survey_responses (emp_id,question_id,cat_id,rating,creation_date,publish_date,close_date) VALUES ('"+LoginPage.LOGIN_USERID+"' , '"+qIdFive+"' , '"+catId+"' , '"+fifthResp+"' , '"+createDate+"' , '"+publishDate+"' , '"+closeDate+"') ON  DUPLICATE KEY UPDATE rating = '"+fifthResp+"'") ;
 
+                    //    con.createStatement().execute(" INSERT INTO survey_responses (emp_id,question_id,cat_id,rating,creation_date,publish_date,close_date) VALUES ('"+LoginPage.LOGIN_USERID+"' , '"+qIdFive+"' , '"+catId+"' , '"+fifthResp+"' , '"+createDate+"''"+publishDate+"' , '"+closeDate+"') ON  DUPLICATE KEY UPDATE rating = '"+fifthResp+"'") ;
                     ResultSet avgRating = con.createStatement().executeQuery("select avg(rating) from survey_responses where emp_id = '"+LoginPage.LOGIN_USERID+"'");
                     avgRating.next();
                         int average = avgRating.getInt(1);
