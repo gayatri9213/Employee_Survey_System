@@ -85,7 +85,7 @@ public class AddQue extends JFrame
                         PreparedStatement p1 = connection.prepareStatement(str1);
                         p1.execute();
                         System.out.println("Record Successfully Inserted | many to many table");
-                        c.close();
+                        connection.close();
                     }
                     else
                         System.out.println("Insert Failed");
@@ -94,6 +94,7 @@ public class AddQue extends JFrame
                 }
                 JOptionPane.showMessageDialog(frame, "Successfull Insertion");
                 //new MainClass();
+                frame.setVisible(false);
 
 
             }        });

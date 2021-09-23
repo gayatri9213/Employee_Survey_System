@@ -459,7 +459,6 @@ public class MainClass extends JFrame implements ItemListener {
     public void maneger_combo()
     {
         try {
-
             Connection connection= UtilityFunctions.createConnection();
             String sql = "Select username from users where role = 'manager'";
             p = connection.prepareStatement(sql);
@@ -492,7 +491,7 @@ public class MainClass extends JFrame implements ItemListener {
                         r = p.executeQuery();
                         while (r.next()) {
                             id = r.getInt("user_id");
-                            maneger.addItem(id);
+                           // maneger.addItem(id);
                         }
 
                     } catch (SQLException |ClassNotFoundException ex) {
