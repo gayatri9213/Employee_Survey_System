@@ -1,12 +1,9 @@
 package UserPackage;
 
-import LoginPage.LoginPage;
-import com.buttons.AllUserInputButtons;
-import com.framesAndPanels.AllFramesAndPanels;
-import com.labels.AllLabels;
-import com.mysql.cj.protocol.Resultset;
-
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -18,42 +15,44 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import LoginPage.LoginPage;
+import com.buttons.AllUserInputButtons;
+import com.framesAndPanels.AllFramesAndPanels;
+import com.labels.AllLabels;
+import com.mysql.cj.protocol.Resultset;
+import org.jfree.text.TextBox;
+
 import static com.util.UtilityFunctions.createConnection;
 
-public class MainUserGUI {
+public class MainUserGUI extends JFrame implements ActionListener, ItemListener {
+    ArrayList<Responses> fetch = new ArrayList<Responses>();
 
-    public int catId,qIdOne,qIdTwo,qIdThree,qIdFour,qIdFive;
-    public int categoryId;
-    String categoryName;
+    final int RADIOY =120, RADIOW =100, RADIOH = 40;
+
+    private int categoryId,catId;
+    int resp,secResp,thirdResp,fourthResp,fifthResp;
+    static int selectedItem;
+    private String categoryName;
     Connection con = createConnection();
-    ArrayList<Navigator> fetch = new ArrayList<Navigator>();
 
-    public JButton feedbackButton;
-    public JButton nextButton;
-    public JButton secondNextButton;
-    public JButton thirdNextButton;
-    public JButton fourthNextButton;
-    public JButton fifthNextButton;
-    public JButton prevButton;
-    public JButton submitButton;
-    public JButton resetButton;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+    }
+
+    public JButton feedbackButton,nextButton,secondNextButton,thirdNextButton,fourthNextButton,fifthNextButton,submitButton;
+    public JPanel mainPanel,secondPanel,thirdPanel,fourthPanel,fifthPanel,topPanel,bottomPanel,buttonPanel,commentPanel;
+  //  public JLabel createDateLabel,publishDateLabel,closeDateLabel,closeDate,createDate,publishDate,questionLabel1,questionLabel2;
+    public JTextField commentArea;
+
+    JRadioButton respOne,respTwo,respThree,respFive,respFour;
     public JComboBox categoryCombo;
-
     public JFrame queFrame;
-    public JPanel mainPanel;
-    public JPanel secondPanel;
-    public JPanel thirdPanel;
-    public JPanel fourthPanel;
-    public JPanel fifthPanel;
-    public JPanel topPanel;
-    public JPanel buttonPanel;
-    public JPanel blankPanel;
-
-    public JLabel createDateLabel;
-    public JLabel publishDateLabel;
-    public JLabel closeDateLabel;
-    public JLabel questionLabel1;
-    public JLabel questionLabel2;
+    ButtonGroup group;
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         new MainUserGUI();
@@ -63,6 +62,12 @@ public class MainUserGUI {
         AllUserInputButtons userInputButtonsCallingObj = new AllUserInputButtons();
         AllFramesAndPanels userFramesAndPanelsObj = new AllFramesAndPanels();
         AllLabels labelsObj = new AllLabels();
+
+        respOne = new JRadioButton("Poor");
+        respTwo=new JRadioButton("Average");
+        respThree=new JRadioButton("Good");
+        respFour=new JRadioButton("Very Good");
+        respFive=new JRadioButton("Outstanding");
 
         String selected = "-- SELECTED --";
         categoryCombo = new JComboBox();
@@ -75,12 +80,13 @@ public class MainUserGUI {
         // Frames and panels code
         queFrame = userFramesAndPanelsObj.putFrame();
         mainPanel = userFramesAndPanelsObj.putMainPanel();
+        commentPanel = userFramesAndPanelsObj.putCommentPanel();
         secondPanel=userFramesAndPanelsObj.putSecondPanel();
         thirdPanel=userFramesAndPanelsObj.putThirdPanel();
         fourthPanel=userFramesAndPanelsObj.putFourthPanel();
         fifthPanel= userFramesAndPanelsObj.putFifthPanel();
-        blankPanel=userFramesAndPanelsObj.putBlankPanel();
         topPanel = userFramesAndPanelsObj.putTopPanel();
+        bottomPanel = userFramesAndPanelsObj.putBottomPanel();
         buttonPanel = userFramesAndPanelsObj.putButtonPanel();
 
         // Buttons Code
@@ -90,16 +96,17 @@ public class MainUserGUI {
         thirdNextButton=userInputButtonsCallingObj.putThirdButton();
         fourthNextButton=userInputButtonsCallingObj.putFourthButton();
         fifthNextButton=userInputButtonsCallingObj.putFifthButton();
-        prevButton = userInputButtonsCallingObj.putPrevButton();
         submitButton = userInputButtonsCallingObj.putSubmitButton();
-        resetButton = userInputButtonsCallingObj.putResetButton();
 
         // Labels Code
-        createDateLabel = labelsObj.putCreateDate();
+    /*    createDateLabel = labelsObj.putCreateDate();
         publishDateLabel = labelsObj.putPublishDate();
         closeDateLabel = labelsObj.putCloseDate();
+        createDate = labelsObj.createDate();
+        closeDate = labelsObj.closeDate();
+        publishDate = labelsObj.publishDate();
         questionLabel1 = labelsObj.putPublishDate();
-        questionLabel2 = labelsObj.putPublishDate();
+        questionLabel2 = labelsObj.putPublishDate();*/
 
         // Add Panels and Buttons on the Frame
         queFrame.add(mainPanel);
@@ -107,24 +114,32 @@ public class MainUserGUI {
         queFrame.add(thirdPanel);
         queFrame.add(fourthPanel);
         queFrame.add(fifthPanel);
-        queFrame.add(blankPanel);
         queFrame.add(topPanel);
         queFrame.add(buttonPanel);
+        queFrame.add(commentPanel);
 
         buttonPanel.add(feedbackButton);
-        mainPanel.add(nextButton);
         secondPanel.add(secondNextButton);
         thirdPanel.add(thirdNextButton);
         fourthPanel.add(fourthNextButton);
         fifthPanel.add(fifthNextButton);
-        mainPanel.add(prevButton);
+        submitButton.setVisible(false);
+        commentPanel.add(submitButton);
 
-        topPanel.add(createDateLabel);
+      /*  topPanel.add(createDateLabel);
         topPanel.add(publishDateLabel);
-        topPanel.add(closeDateLabel);
+        topPanel.add(closeDateLabel);*/
+/*
+        topPanel.add(createDate);
+        topPanel.add(publishDate);
+        topPanel.add(closeDate);
+        topPanel.add(createDate);
+        topPanel.add(closeDate);
+        topPanel.add(publishDate);*/
 
         mainPanel.add(categoryCombo);
-        mainPanel.add(questionLabel1);
+        mainPanel.add(nextButton);
+
 
         queFrame.setSize(400, 400);
         queFrame.pack();
@@ -136,70 +151,64 @@ public class MainUserGUI {
             addComboBox();
         });
 
-        categoryCombo.addItemListener(new ItemListener(){
+        categoryCombo.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                Resultset dates;
-                fetch.clear();
-                ResultSet fetchId;
-                ResultSet fetchQuestions;
-                try {
-                    fetchId = con.createStatement().executeQuery("select category_id from categories where category_name = '" + (String) categoryCombo.getSelectedItem() + "'");
-                    fetchId.next();
-                    catId = fetchId.getInt(1);
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    try {
+                        selectedItem = categoryCombo.getSelectedIndex();
+                        fetch.clear();
+                        ResultSet fetchId;
+                        ResultSet fetchQuestions;
 
-                    fetchQuestions = con.createStatement().executeQuery("select questions.question_id,questions.question from questions join category_question on (questions.question_id=category_question.question_id) join survey_responses on (survey_responses.question_id = category_question.question_id) where cat_id = '" + catId + "'  ");
-                    while (fetchQuestions.next()) {
-                       Navigator nav = new Navigator();
-                        nav.setFetchedQuestionId(fetchQuestions.getInt(1));
-                        nav.setFetchedQuestion(fetchQuestions.getString(2));
-                        fetch.add(nav);
-                    }
+                        fetchId = con.createStatement().executeQuery("select category_id from categories where category_name = '" + (String) categoryCombo.getSelectedItem() + "'");
+                        fetchId.next();
+                        catId = fetchId.getInt(1);
 
-                    JTextField textFieldId = new JTextField();
-                    textFieldId.setBounds(30,50,100,40);
-                    textFieldId.setText(String.valueOf(fetch.get(0).getFetchedQuestionId()));
-                    textFieldId.setEditable(false);
-                    mainPanel.add(textFieldId);
+                        fetchQuestions = con.createStatement().executeQuery("select questions.question_id,questions.question from questions join category_question on (questions.question_id=category_question.question_id) join survey_responses on (survey_responses.question_id = category_question.question_id) where cat_id = '" + catId + "'  ");
+                        while (fetchQuestions.next()) {
+                            Responses respOne = new Responses();
+                            respOne.setFetchedQuestionId(fetchQuestions.getInt(1));
+                            respOne.setFetchedQuestion(fetchQuestions.getString(2));
+                            fetch.add(respOne);
+                        }
 
-                    JTextField textField = new JTextField();
-                    textField.setBounds(150,50,600,40);
-                    textField.setText(fetch.get(0).getFetchedQuestion());
-                    textField.setEditable(false);
-                    mainPanel.add(textField);
+                       // ArrayList<BeanClass> bean = new ArrayList<>();
+                        JTextField textFieldId = new JTextField();
+                        textFieldId.setBounds(30,50,100,RADIOH);
+                        textFieldId.setText(String.valueOf(fetch.get(0).getFetchedQuestionId()));
+                        textFieldId.setEditable(false);
+                        mainPanel.add(textFieldId);
 
-                    JSlider slider1 = new JSlider();
-                    slider1.setBounds(150,120,600,40);
-                    slider1.setMajorTickSpacing(1);
-                    slider1.setPaintLabels(true);
-                    System.out.println(slider1.getValue());
-                    mainPanel.add(slider1);
-/*
+                        JTextField textField = new JTextField();
+                        textField.setBounds(150,50,600,RADIOH);
+                        textField.setText(fetch.get(0).getFetchedQuestion());
+                        textField.setEditable(false);
+                        mainPanel.add(textField);
 
-                    dates = (Resultset) con.createStatement().executeQuery("select publish_date,close_date from survey_responses where category_id = '"+catId+"");
-                    ((ResultSet) dates).next();
-                    String publishDate = ((ResultSet) dates).getString(1);
-                    String closeDate = ((ResultSet) dates).getString(2);
+                        mainPanel.add(respOne);
+                        mainPanel.add(respTwo);
+                        mainPanel.add(respThree);
+                        mainPanel.add(respFour);
+                        mainPanel.add(respFive);
 
-                    JTextField publishField = new JTextField();
-                    publishField.setBounds(200,20,100,20);
-                    publishField.setText(publishDate);
-                    publishField.setVisible(true);
-                    publishField.setEditable(false);
-                    topPanel.add(publishField);
+                        respOne.setBounds(150,RADIOY,RADIOW,RADIOH);
+                        respTwo.setBounds(260,RADIOY,RADIOW,RADIOH);
+                        respThree.setBounds(370,RADIOY,RADIOW,RADIOH);
+                        respFour.setBounds(480,RADIOY,RADIOW,RADIOH);
+                        respFive.setBounds(590,RADIOY,RADIOW,RADIOH);
 
-                    JTextField closeField = new JTextField();
-                    closeField.setBounds(200,25,100,20);
-                    closeField.setText(closeDate);
-                    closeField.setVisible(true);
-                    closeField.setEditable(false);
-                    topPanel.add(closeField);
-*/
-                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+LoginPage.LOGIN_USERID +"',rating = '"+slider1.getValue()+"',comment = 'none' WHERE question_id= '"+qIdOne+"'");
+                        group = new ButtonGroup();
+                        group.add(respOne);
+                        group.add(respTwo);
+                        group.add(respThree);
+                        group.add(respFour);
+                        group.add(respFive);
 
-                } catch (SQLException ex) {
+                    } catch (SQLException ex) {
                         ex.printStackTrace();
-                     }
+                    }
+                }
             }
         });
 
@@ -210,31 +219,58 @@ public class MainUserGUI {
                 mainPanel.setVisible(false);
 
                 JTextField textFieldId = new JTextField();
-                textFieldId.setBounds(30,50,100,40);
+                textFieldId.setBounds(30,50,100,RADIOH);
                 textFieldId.setText(String.valueOf(fetch.get(1).getFetchedQuestionId()));
                 textFieldId.setEditable(false);
                 secondPanel.add(textFieldId);
 
                 JTextField textField = new JTextField();
-                textField.setBounds(150,50,600,40);
+                textField.setBounds(150,50,600,RADIOH);
                 textField.setText(fetch.get(1).getFetchedQuestion());
                 textField.setEditable(false);
                 secondPanel.add(textField);
 
-                JSlider slider2 = new JSlider();
-                slider2.setBounds(150,120,600,40);
-                slider2.setMaximum(5);
-                slider2.setMajorTickSpacing(1);
-                slider2.setPaintLabels(true);
-                secondPanel.add(slider2);
-                qIdTwo=fetch.get(1).getFetchedQuestionId();
+                secondPanel.add(respOne);
+                secondPanel.add(respTwo);
+                secondPanel.add(respThree);
+                secondPanel.add(respFour);
+                secondPanel.add(respFive);
+
+                respOne.setBounds(150,RADIOY,RADIOW,RADIOH);
+                respTwo.setBounds(260,RADIOY,RADIOW,RADIOH);
+                respThree.setBounds(370,RADIOY,RADIOW,RADIOH);
+                respFour.setBounds(480,RADIOY,RADIOW,RADIOH);
+                respFive.setBounds(590,RADIOY,RADIOW,RADIOH);
+
+                group = new ButtonGroup();
+                group.add(respOne);
+                group.add(respTwo);
+                group.add(respThree);
+                group.add(respFour);
+                group.add(respFive);
+
+                if (respOne.isSelected()){
+                    resp = 1;
+                    System.out.println(resp);
+                } else if (respTwo.isSelected()) {
+                    resp= 2;
+                    System.out.println(resp);
+                }else if (respThree.isSelected()) {
+                    resp= 3;
+                    System.out.println(resp);
+                } else if (respFour.isSelected()) {
+                    resp= 4;
+                    System.out.println(resp);
+                } else if(respFive.isSelected()){
+                    resp= 5;}
+
+                int qIdOne=fetch.get(0).getFetchedQuestionId();
 
                 try {
-                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+LoginPage.LOGIN_USERID +"',rating = '"+slider2.getValue()+"',comment = 'none' WHERE question_id= '"+qIdTwo+"'");
+                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+ LoginPage.LOGIN_USERID +"',rating = '"+resp+"',comment = 'none' WHERE question_id= '"+qIdOne+"'");
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-
             }
         });
 
@@ -245,30 +281,59 @@ public class MainUserGUI {
                 secondPanel.setVisible(false);
 
                 JTextField textFieldId = new JTextField();
-                textFieldId.setBounds(30,50,100,40);
+                textFieldId.setBounds(30,50,100,RADIOH);
                 textFieldId.setText(String.valueOf(fetch.get(2).getFetchedQuestionId()));
                 textFieldId.setEditable(false);
                 thirdPanel.add(textFieldId);
 
                 JTextField textField = new JTextField();
-                textField.setBounds(150,50,600,40);
+                textField.setBounds(150,50,600,RADIOH);
                 textField.setText(fetch.get(2).getFetchedQuestion());
                 textField.setEditable(false);
                 thirdPanel.add(textField);
 
-                JSlider slider3 = new JSlider();
-                slider3.setBounds(150,120,600,40);
-                slider3.setMaximum(5);
-                slider3.setMajorTickSpacing(1);
-                slider3.setPaintLabels(true);
-                thirdPanel.add(slider3);
-                qIdThree=fetch.get(2).getFetchedQuestionId();
+                thirdPanel.add(respOne);
+                thirdPanel.add(respTwo);
+                thirdPanel.add(respThree);
+                thirdPanel.add(respFour);
+                thirdPanel.add(respFive);
+
+                respOne.setBounds(150,RADIOY,RADIOW,RADIOH);
+                respTwo.setBounds(260,RADIOY,RADIOW,RADIOH);
+                respThree.setBounds(370,RADIOY,RADIOW,RADIOH);
+                respFour.setBounds(480,RADIOY,RADIOW,RADIOH);
+                respFive.setBounds(590,RADIOY,RADIOW,RADIOH);
+
+                group = new ButtonGroup();
+                group.add(respOne);
+                group.add(respTwo);
+                group.add(respThree);
+                group.add(respFour);
+                group.add(respFive);
+
+                if (respOne.isSelected()){
+                    secResp= 1;
+                    System.out.println(resp);
+                } else if (respTwo.isSelected()) {
+                    secResp= 2;
+                    System.out.println(resp);
+                }else if (respThree.isSelected()) {
+                    secResp= 3;
+                    System.out.println(resp);
+                } else if (respFour.isSelected()) {
+                    secResp= 4;
+                    System.out.println(resp);
+                } else if(respFive.isSelected()){
+                    secResp= 5;}
+
+                int qIdTwo=fetch.get(1).getFetchedQuestionId();
 
                 try {
-                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+LoginPage.LOGIN_USERID +"',rating = '"+slider3.getValue()+"',comment = 'none' WHERE question_id= '"+qIdThree+"'");
+                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+ LoginPage.LOGIN_USERID +"',rating = '"+secResp+"',comment = 'none' WHERE question_id= '"+qIdTwo+"'");
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
+
             }
         });
 
@@ -279,30 +344,58 @@ public class MainUserGUI {
                 thirdPanel.setVisible(false);
 
                 JTextField textFieldId = new JTextField();
-                textFieldId.setBounds(30,50,100,40);
+                textFieldId.setBounds(30,50,100,RADIOH);
                 textFieldId.setText(String.valueOf(fetch.get(3).getFetchedQuestionId()));
                 textFieldId.setEditable(false);
                 fourthPanel.add(textFieldId);
 
                 JTextField textField = new JTextField();
-                textField.setBounds(150,50,600,40);
+                textField.setBounds(150,50,600,RADIOH);
                 textField.setText(fetch.get(3).getFetchedQuestion());
                 textField.setEditable(false);
                 fourthPanel.add(textField);
 
-                JSlider slider4 = new JSlider();
-                slider4.setBounds(150,120,600,40);
-                slider4.setMaximum(5);
-                slider4.setMajorTickSpacing(1);
-                slider4.setPaintLabels(true);
-                fourthPanel.add(slider4);
-                qIdFour=fetch.get(3).getFetchedQuestionId();
+                fourthPanel.add(respOne);
+                fourthPanel.add(respTwo);
+                fourthPanel.add(respThree);
+                fourthPanel.add(respFour);
+                fourthPanel.add(respFive);
 
+                respOne.setBounds(150,RADIOY,RADIOW,RADIOH);
+                respTwo.setBounds(260,RADIOY,RADIOW,RADIOH);
+                respThree.setBounds(370,RADIOY,RADIOW,RADIOH);
+                respFour.setBounds(480,RADIOY,RADIOW,RADIOH);
+                respFive.setBounds(590,RADIOY,RADIOW,RADIOH);
+
+                group = new ButtonGroup();
+                group.add(respOne);
+                group.add(respTwo);
+                group.add(respThree);
+                group.add(respFour);
+                group.add(respFive);
+
+                if (respOne.isSelected()){
+                    thirdResp= 1;
+                    System.out.println(resp);
+                } else if (respTwo.isSelected()) {
+                    thirdResp= 2;
+                    System.out.println(resp);
+                }else if (respThree.isSelected()) {
+                    thirdResp= 3;
+                    System.out.println(resp);
+                } else if (respFour.isSelected()) {
+                    thirdResp= 4;
+                    System.out.println(resp);
+                } else if(respFive.isSelected()){
+                    thirdResp= 5;}
+
+                int qIdThree=fetch.get(2).getFetchedQuestionId();
                 try {
-                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+LoginPage.LOGIN_USERID +"',rating = '"+slider4.getValue()+"',comment = 'none' WHERE question_id= '"+qIdFour+"'");
+                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+ LoginPage.LOGIN_USERID +"',rating = '"+thirdResp+"',comment = 'none' WHERE question_id= '"+qIdThree+"'");
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
+
             }
         });
 
@@ -313,41 +406,159 @@ public class MainUserGUI {
                 fourthPanel.setVisible(false);
 
                 JTextField textFieldId = new JTextField();
-                textFieldId.setBounds(30,50,100,40);
+                textFieldId.setBounds(30,50,100,RADIOH);
                 textFieldId.setText(String.valueOf(fetch.get(4).getFetchedQuestionId()));
-                System.out.println(fetch.get(4).getFetchedQuestionId());
                 textFieldId.setEditable(false);
                 fifthPanel.add(textFieldId);
 
                 JTextField textField = new JTextField();
-                textField.setBounds(150,50,600,40);
+                textField.setBounds(150,50,600,RADIOH);
                 textField.setText(fetch.get(4).getFetchedQuestion());
                 textField.setEditable(false);
                 fifthPanel.add(textField);
 
-                JSlider slider5 = new JSlider();
-                slider5.setBounds(150,120,600,40);
-                slider5.setMaximum(5);
-                slider5.setMajorTickSpacing(1);
-                slider5.setPaintLabels(true);
-                fifthPanel.add(slider5);
-                qIdFive=fetch.get(4).getFetchedQuestionId();
+                fifthPanel.add(respOne);
+                fifthPanel.add(respTwo);
+                fifthPanel.add(respThree);
+                fifthPanel.add(respFour);
+                fifthPanel.add(respFive);
 
-                blankPanel.setVisible(true);
-                fifthPanel.setVisible(false);
+                respOne.setBounds(150,RADIOY,RADIOW,RADIOH);
+                respTwo.setBounds(260,RADIOY,RADIOW,RADIOH);
+                respThree.setBounds(370,RADIOY,RADIOW,RADIOH);
+                respFour.setBounds(480,RADIOY,RADIOW,RADIOH);
+                respFive.setBounds(590,RADIOY,RADIOW,RADIOH);
 
-                JOptionPane.showMessageDialog(fifthPanel,"Your Response is Submitted Successfully");
+                group = new ButtonGroup();
+                group.add(respOne);
+                group.add(respTwo);
+                group.add(respThree);
+                group.add(respFour);
+                group.add(respFive);
 
+                if (respOne.isSelected()){
+                    fourthResp= 1;
+                    System.out.println(resp);
+                } else if (respTwo.isSelected()) {
+                    fourthResp= 2;
+                    System.out.println(resp);
+                }else if (respThree.isSelected()) {
+                    fourthResp= 3;
+                    System.out.println(resp);
+                } else if (respFour.isSelected()) {
+                    fourthResp= 4;
+                    System.out.println(resp);
+                } else if(respFive.isSelected()){
+                    fourthResp= 5;}
+
+                int qIdFour=fetch.get(3).getFetchedQuestionId();
                 try {
-                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+LoginPage.LOGIN_USERID +"',rating = '"+slider5.getValue()+"',comment = 'none' WHERE question_id= '"+qIdFive+"'");
+                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+ LoginPage.LOGIN_USERID +"',rating = '"+fourthResp+"',comment = 'none' WHERE question_id= '"+qIdFour+"'");
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             }
         });
 
-    }
+        fifthNextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fifthPanel.setVisible(true);
+                fourthPanel.setVisible(false);
 
+                JTextField textFieldId = new JTextField();
+                textFieldId.setBounds(30,50,100,RADIOH);
+                textFieldId.setText(String.valueOf(fetch.get(4).getFetchedQuestionId()));
+                fifthPanel.add(textFieldId);
+
+                JTextField textField = new JTextField();
+                textField.setBounds(150,50,600,RADIOH);
+                textField.setText(fetch.get(4).getFetchedQuestion());
+                textField.setEditable(false);
+                fifthPanel.add(textField);
+
+                fifthPanel.add(respOne);
+                fifthPanel.add(respTwo);
+                fifthPanel.add(respThree);
+                fifthPanel.add(respFour);
+                fifthPanel.add(respFive);
+
+                respOne.setBounds(150,RADIOY,RADIOW,RADIOH);
+                respTwo.setBounds(260,RADIOY,RADIOW,RADIOH);
+                respThree.setBounds(370,RADIOY,RADIOW,RADIOH);
+                respFour.setBounds(480,RADIOY,RADIOW,RADIOH);
+                respFive.setBounds(590,RADIOY,RADIOW,RADIOH);
+
+                group = new ButtonGroup();
+                group.add(respOne);
+                group.add(respTwo);
+                group.add(respThree);
+                group.add(respFour);
+                group.add(respFive);
+
+                if (respOne.isSelected()){
+                    fifthResp= 1;
+                    System.out.println(resp);
+                } else if (respTwo.isSelected()) {
+                    fifthResp= 2;
+                    System.out.println(resp);
+                }else if (respThree.isSelected()) {
+                    fifthResp= 3;
+                    System.out.println(resp);
+                } else if (respFour.isSelected()) {
+                    fifthResp= 4;
+                    System.out.println(resp);
+                } else if(respFive.isSelected()){
+                    fifthResp= 5;}
+
+                int qIdFive=fetch.get(4).getFetchedQuestionId();
+                try {
+                    con.createStatement().execute(" UPDATE survey_responses SET emp_id= '"+ LoginPage.LOGIN_USERID +"',rating = '"+fifthResp+"',comment = 'none' WHERE question_id= '"+qIdFive+"'");
+
+                    ResultSet avgRating = con.createStatement().executeQuery("select avg(rating) from survey_responses where emp_id = '"+LoginPage.LOGIN_USERID+"'");
+                    avgRating.next();
+                        int average = avgRating.getInt(1);
+
+                    if(average < 3){
+                        fifthPanel.setVisible(false);
+                        commentPanel.setVisible(true);
+                        submitButton.setVisible(true);
+
+                        JTextField commentReq = new JTextField();
+                        commentReq.setBounds(30,50,600,RADIOH);
+                        textFieldId.setText("Your Ratings are below Average, do you have any other Suggestions ?");
+                        commentPanel.add(textFieldId);
+                        commentPanel.setVisible(false);
+
+                        commentPanel.setVisible(true);
+                        commentArea = new JTextField();
+                        commentArea.setBounds(30,130,600,80);
+                        commentPanel.add(commentArea);
+                    }else{
+                        JOptionPane.showMessageDialog(fifthPanel,"Your Response is Submitted Successfully");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String comments = commentArea.getText();
+                try {
+                    con.createStatement().execute(" UPDATE survey_responses SET comment = '"+comments+"' WHERE emp_id = '"+LoginPage.LOGIN_USERID+"' ");
+                    JOptionPane.showMessageDialog(fifthPanel,"Your Response is Submitted Successfully");
+                    categoryCombo.remove(selectedItem);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        });
+
+    }
 
     public void addComboBox(){
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd");
@@ -372,6 +583,6 @@ public class MainUserGUI {
             ex.printStackTrace();
         }
     }
-
-
 }
+
+

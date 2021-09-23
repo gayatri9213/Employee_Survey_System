@@ -9,13 +9,11 @@ public class AllUserInputButtons extends JButton {
 
     JButton feedbackButton=new JButton("Fill Feedback");
     JButton submitButton = new JButton("Submit");
-    JButton resetButton = new JButton("Clear");
     JButton nextButton = new JButton("Next");
     JButton secondNextButton = new JButton("Next");
     JButton thirdNextButton = new JButton("Next");
     JButton fourthNextButton = new JButton("Next");
-    JButton fifthNextButton = new JButton("Submit");
-    JButton prevButton = new JButton("Previous");
+    JButton fifthNextButton = new JButton("Submit 1");
 
     public JButton putFeedbackButton(){
         feedbackButton.setBounds(50,110,BUTTONWIDTH,BUTTONHEIGHT);
@@ -56,21 +54,10 @@ public class AllUserInputButtons extends JButton {
         return fifthNextButton;
     }
 
-    public JButton putPrevButton(){
-        nextButton.setBounds(750,500,BUTTONWIDTH,BUTTONHEIGHT);
-        nextButton.setBackground(Color.lightGray);
-        return prevButton;
-    }
-
     public JButton putSubmitButton(){
-        submitButton.setBounds(500,750,BUTTONWIDTH,BUTTONHEIGHT);
+        submitButton.setBounds(900,500,BUTTONWIDTH,BUTTONHEIGHT);
         feedbackButton.setBackground(Color.lightGray);
         return submitButton;
     }
 
-    public JButton putResetButton(){
-        resetButton.setBounds(1200,750,BUTTONWIDTH,BUTTONHEIGHT);
-        feedbackButton.setBackground(Color.lightGray);
-        return resetButton;
-    }
 }

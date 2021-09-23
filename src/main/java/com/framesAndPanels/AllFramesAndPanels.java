@@ -8,12 +8,13 @@ public class AllFramesAndPanels extends JFrame {
     JFrame queFrame= new JFrame("Survey");
     JPanel buttonPanel=new JPanel();
     JPanel topPanel = new JPanel();
+    JPanel bottomPanel=new JPanel();
     JPanel mainPanel = new JPanel();
     JPanel secondPanel = new JPanel();
     JPanel thirdPanel = new JPanel();
     JPanel fourthPanel = new JPanel();
     JPanel fifthPanel = new JPanel();
-    JTextField comment = new JTextField();
+    JPanel commentPanel = new JPanel();
 
     public JFrame putFrame(){
         queFrame.setLayout(null);
@@ -21,6 +22,12 @@ public class AllFramesAndPanels extends JFrame {
         return queFrame;
     }
 
+    public JPanel putCommentPanel(){
+        commentPanel.setLayout(null);
+        commentPanel.setBounds(251,120,1450,629);
+        commentPanel.setBackground(Color.WHITE);
+        return commentPanel;
+    }
 
     public JPanel putMainPanel(){
         mainPanel.setLayout(null);
@@ -64,23 +71,15 @@ public class AllFramesAndPanels extends JFrame {
         return topPanel;
     }
 
+    public JPanel putBottomPanel(){
+        bottomPanel.setBounds(0,750,1450,300);
+        bottomPanel.setBackground(Color.lightGray);
+        return bottomPanel;
+    }
+
     public JPanel putButtonPanel(){
         buttonPanel.setBounds(0,120,250,629);
         buttonPanel.setBackground(Color.gray);
         return buttonPanel;
-    }
-
-    public JTextField putTextField(){
-        comment.setBounds(150,150,600,40);
-        comment.setBackground(Color.white);
-        comment.setVisible(false);
-        return comment;
-    }
-
-    public JPanel putBlankPanel(){
-        secondPanel.setLayout(null);
-        secondPanel.setBounds(251,120,1450,629);
-        secondPanel.setBackground(Color.WHITE);
-        return secondPanel;
     }
 }
