@@ -19,11 +19,10 @@ public class AddCat extends JFrame {
     JTextField EnterCategoryTextField;
     JButton SaveButton;
     JFrame frame;
-    //public int tempCatId;
     public java.sql.Connection c;
     public Statement s;
     public PreparedStatement p;
-    long tempCatLong =0L;
+    //long tempCatLong =0L;
 
     public AddCat() {
 
@@ -58,42 +57,22 @@ public class AddCat extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
 
-
                     Connection connection= UtilityFunctions.createConnection();
-
                     String str = " insert into categories(category_name) values('" + EnterCategoryTextField.getText() + "')";
-
-                  /*  p = c.prepareStatement(str, Statement.RETURN_GENERATED_KEYS);
-                    int rownum = p.executeUpdate();
-                    resultset = p.getGeneratedKeys();
-                    if( resultset.next()) {
-                        System.out.println("Record inserted successfully");
-                        tempCatLong = resultset.getInt(1);
-                    }*/
                     PreparedStatement p = connection.prepareStatement(str);
 
                     boolean x = false;
                     if (x == p.execute()) {
-                        System.out.println("Record Successfully Inserted");
-
-                        /*PreparedStatement p1 = c.prepareStatement("SELECT LAST_INSERT_ID()");
-                        tempLastInsertId = p1.getGeneratedKeys();
-                        if (tempLastInsertId.next()) {
-                            TEMPCATID=tempLastInsertId.getInt(1);
-                            System.out.println(TEMPCATID);
-                        }*/
+                       System.out.println("Record Successfully Inserted");
                     }
                     else
-                        System.out.println("Insert Failed");
+                       System.out.println("Insert Failed");
                 } catch (SQLException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }
                 JOptionPane.showMessageDialog(frame, "Successfull Insertion");
-                try {
-                    new MainClass();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
+                frame.setVisible(false);
+
             }        });
         panel.setVisible(true);
         frame.setVisible(true);

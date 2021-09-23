@@ -16,8 +16,6 @@ public class AddQue extends JFrame
     public JTextField EnterQuestionTextField;
     public JButton SaveButton;
     public JFrame frame;
-    public JPanel panel;
-    public String str1;
     public java.sql.Connection c;
     public Statement s;
     public PreparedStatement p;
@@ -58,44 +56,32 @@ public class AddQue extends JFrame
             public void actionPerformed(ActionEvent e) {
                 try {
 
-                   // if(c.isClosed())
-                     //   c.beginRequest();
-
                     Connection connection= UtilityFunctions.createConnection();
                     s = connection.createStatement();
                     String Key[]= {"question_id"};
                     String str = " insert into questions(question) values('" + EnterQuestionTextField.getText() + "')";
-
                     PreparedStatement p = connection.prepareStatement(str,Key);
                     int b= p.executeUpdate();
-                    //int Key=p.getGeneratedKeys().findColumn("question_id");
                     ResultSet rs=p.getGeneratedKeys();
                     if(rs.next())
                         question_id=rs.getInt(1);
-                    // question_id= p.getGeneratedKeys().getInt(0);
-                    //  question_id= p.executeUpdate(str,"question_id");
-                    //boolean b=p.execute(str, "question_id");
 
                     boolean x = false;
                     if (b>0) {
-                        System.out.println("Record Successfully Inserted");
-                        // c.close();
-                        //   c.beginRequest();
+                        //System.out.println("Record Successfully Inserted");
+
                         String str1 = " insert into category_question(category_id,question_id) values('"+categoryId+"','"+question_id+"')";
                         PreparedStatement p1 = connection.prepareStatement(str1);
                         p1.execute();
-                        System.out.println("Record Successfully Inserted | many to many table");
+                       // System.out.println("Record Successfully Inserted | many to many table");
                         connection.close();
                     }
-                    else
-                        System.out.println("Insert Failed");
+
                 } catch (SQLException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }
                 JOptionPane.showMessageDialog(frame, "Successfull Insertion");
-                //new MainClass();
                 frame.setVisible(false);
-
 
             }        });
         panel.setVisible(true);
