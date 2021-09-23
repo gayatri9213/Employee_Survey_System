@@ -10,7 +10,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-
+/*
+* @Author: Moiza Attar
+* */
 public class AddCat extends JFrame {
 
     JLabel EnterCategory;

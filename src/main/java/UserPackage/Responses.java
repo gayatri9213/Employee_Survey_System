@@ -1,5 +1,7 @@
 package UserPackage;
-
+/*
+* @Auhthor : Mayur Pardeshi
+* */
 public class Responses {
     private int fetchedQuestionId;
     private String fetchedQuestion;

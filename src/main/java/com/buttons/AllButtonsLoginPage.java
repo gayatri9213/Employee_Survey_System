@@ -2,7 +2,9 @@ package com.buttons;
 
 import javax.swing.*;
 import java.awt.*;
-
+/*
+* @Author : Somanshu Bendale
+*   */
 public class AllButtonsLoginPage extends JButton {
     static int LOGINPAGEBUTTONWIDTH=120;
     static int LOGINPAGEBUTTONHEIGHT=30;

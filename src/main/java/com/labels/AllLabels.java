@@ -1,7 +1,9 @@
 package com.labels;
 
 import javax.swing.*;
-
+/*
+* @Author : Mayur Pardeshi
+* */
 public class AllLabels extends JLabel{
     JLabel createDateLabel = new JLabel("Creation Date :");
     JLabel publishDateLabel=new JLabel("Publish Date :");

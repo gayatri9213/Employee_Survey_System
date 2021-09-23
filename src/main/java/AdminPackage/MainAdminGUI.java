@@ -25,7 +25,9 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-
+/*
+* @Author : Prachi Khalkar
+*   */
 public class MainAdminGUI extends JFrame {
     JFrame frame;
     JPanel buttonPanel, topPanel, mainPanel, editPanel, createPanel,reportPanel;
@@ -211,6 +213,9 @@ public class MainAdminGUI extends JFrame {
 
     }
 
+    /*
+    * @Author : Aniruddha Kulkarni
+    *  */
     public void Report()    {
         reportPanel.setBounds(251, 120, 1451, 629);
         reportPanel.setBackground(Color.WHITE);

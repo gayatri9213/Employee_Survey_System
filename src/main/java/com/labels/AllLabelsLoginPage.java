@@ -1,7 +1,9 @@
 package com.labels;
 
 import javax.swing.*;
-
+/*\
+* @Author : Somanshu Bendale
+* */
 public class AllLabelsLoginPage extends JLabel
 {
     static int LOGINPAGELABELWIDTH=100;

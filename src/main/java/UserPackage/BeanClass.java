@@ -1,5 +1,7 @@
 package UserPackage;
-
+/*
+* @Author: Mayur Pardeshi
+* */
 public class BeanClass {
     int empId,categoryId,questionId,rating;
     float comments;

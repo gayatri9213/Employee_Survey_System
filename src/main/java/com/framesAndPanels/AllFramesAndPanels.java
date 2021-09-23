@@ -2,7 +2,9 @@ package com.framesAndPanels;
 
 import javax.swing.*;
 import java.awt.*;
-
+/*
+* @Author : Mayur Pardeshi
+* */
 public class AllFramesAndPanels extends JFrame {
 
     JFrame queFrame= new JFrame("Survey");

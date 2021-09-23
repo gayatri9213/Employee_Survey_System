@@ -3,7 +3,9 @@ package com.util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
+/*
+* @Auhtor: Somanshu Bendale
+* */
 public class UtilityFunctions {
     static public String encryptDecrypt(String inputString)
     {
