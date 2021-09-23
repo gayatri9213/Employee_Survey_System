@@ -121,7 +121,6 @@ public void initComponents(){
 
             String username = userNameField.getText();
 
-
             String password= UtilityFunctions.encryptDecrypt( new String(passwordField.getPassword()));
 
 

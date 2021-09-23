@@ -1,9 +1,6 @@
 package UserPackage;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -19,9 +16,6 @@ import LoginPage.LoginPage;
 import com.buttons.AllUserInputButtons;
 import com.framesAndPanels.AllFramesAndPanels;
 import com.labels.AllLabels;
-import com.mysql.cj.protocol.Resultset;
-import org.jfree.text.TextBox;
-
 import static com.util.UtilityFunctions.createConnection;
 
 public class MainUserGUI extends JFrame implements ActionListener, ItemListener {
@@ -46,7 +40,7 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
 
     public JButton feedbackButton,nextButton,secondNextButton,thirdNextButton,fourthNextButton,fifthNextButton,submitButton;
     public JPanel mainPanel,secondPanel,thirdPanel,fourthPanel,fifthPanel,topPanel,bottomPanel,buttonPanel,commentPanel;
-  //  public JLabel createDateLabel,publishDateLabel,closeDateLabel,closeDate,createDate,publishDate,questionLabel1,questionLabel2;
+    public JLabel publishDateLabel,closeDateLabel;
     public JTextField commentArea;
 
     JRadioButton respOne,respTwo,respThree,respFive,respFour;
@@ -99,14 +93,8 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
         submitButton = userInputButtonsCallingObj.putSubmitButton();
 
         // Labels Code
-    /*    createDateLabel = labelsObj.putCreateDate();
         publishDateLabel = labelsObj.putPublishDate();
         closeDateLabel = labelsObj.putCloseDate();
-        createDate = labelsObj.createDate();
-        closeDate = labelsObj.closeDate();
-        publishDate = labelsObj.publishDate();
-        questionLabel1 = labelsObj.putPublishDate();
-        questionLabel2 = labelsObj.putPublishDate();*/
 
         // Add Panels and Buttons on the Frame
         queFrame.add(mainPanel);
@@ -126,16 +114,8 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
         submitButton.setVisible(false);
         commentPanel.add(submitButton);
 
-      /*  topPanel.add(createDateLabel);
         topPanel.add(publishDateLabel);
-        topPanel.add(closeDateLabel);*/
-/*
-        topPanel.add(createDate);
-        topPanel.add(publishDate);
-        topPanel.add(closeDate);
-        topPanel.add(createDate);
-        topPanel.add(closeDate);
-        topPanel.add(publishDate);*/
+        topPanel.add(closeDateLabel);
 
         mainPanel.add(categoryCombo);
         mainPanel.add(nextButton);
@@ -156,9 +136,10 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     try {
+                        feedbackButton.setEnabled(false);
                         selectedItem = categoryCombo.getSelectedIndex();
                         fetch.clear();
-                        ResultSet fetchId;
+                        ResultSet fetchId,publishAndCloseDate;
                         ResultSet fetchQuestions;
 
                         fetchId = con.createStatement().executeQuery("select category_id from categories where category_name = '" + (String) categoryCombo.getSelectedItem() + "'");
@@ -172,6 +153,26 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                             respOne.setFetchedQuestion(fetchQuestions.getString(2));
                             fetch.add(respOne);
                         }
+
+                        ///// DISPLAY PUBLISH AND CLOSE DATE ON TOP OF THE PANEL
+                        publishAndCloseDate = con.createStatement().executeQuery("select publish_date,close_date from survey_responses where cat_id = '"+catId+"'");
+                        publishAndCloseDate.next();
+                            String publishDate = publishAndCloseDate.getString(1);
+                            String closeDate = publishAndCloseDate.getString(2);
+
+                        JTextField publishDateField = new JTextField();
+                        publishDateField.setBounds(100,17,100,20);
+                        publishDateField.setText(publishDate);
+                        publishDateField.setEditable(false);
+                        publishDateField.setVisible(true);
+                        topPanel.add(publishDateField);
+
+                        JTextField closeDateField = new JTextField();
+                        closeDateField.setBounds(100,40,100,20);
+                        closeDateField.setText(closeDate);
+                        closeDateField.setEditable(false);
+                        closeDateField.setVisible(true);
+                        topPanel.add(closeDateField);
 
                        // ArrayList<BeanClass> bean = new ArrayList<>();
                         JTextField textFieldId = new JTextField();
@@ -526,8 +527,9 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
 
                         JTextField commentReq = new JTextField();
                         commentReq.setBounds(30,50,600,RADIOH);
-                        textFieldId.setText("Your Ratings are below Average, do you have any other Suggestions ?");
-                        commentPanel.add(textFieldId);
+                        commentReq.setText("Your Ratings are below Average, do you have any other Suggestions ?");
+                        commentReq.setEditable(false);
+                        commentPanel.add(commentReq);
                         commentPanel.setVisible(false);
 
                         commentPanel.setVisible(true);
@@ -536,6 +538,8 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                         commentPanel.add(commentArea);
                     }else{
                         JOptionPane.showMessageDialog(fifthPanel,"Your Response is Submitted Successfully");
+                        mainPanel.setVisible(true);
+                        commentPanel.setVisible(false);
                     }
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -550,11 +554,11 @@ public class MainUserGUI extends JFrame implements ActionListener, ItemListener 
                 try {
                     con.createStatement().execute(" UPDATE survey_responses SET comment = '"+comments+"' WHERE emp_id = '"+LoginPage.LOGIN_USERID+"' ");
                     JOptionPane.showMessageDialog(fifthPanel,"Your Response is Submitted Successfully");
-                    categoryCombo.remove(selectedItem);
+                    mainPanel.setVisible(true);
+                    commentPanel.setVisible(false);
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-
             }
         });
 
