@@ -15,7 +15,7 @@ import java.util.regex.PatternSyntaxException;
 *  */
 public class AdminPendingTask implements InitiateComponents
 {
-    //private JFrame adminpendingtaskFrame = new JFrame("Admin Pending Tasks");
+
     public JPanel pendingTaskMainPanel = new JPanel();
     private JPanel upperPanel=new JPanel();
     private JTable table;
@@ -24,24 +24,20 @@ public class AdminPendingTask implements InitiateComponents
 
     }
     public void initComponents() throws SQLException, ClassNotFoundException {
-        //adminpendingtaskFrame.setLayout(null);
-        //adminpendingtaskFrame.setExtendedState(adminpendingtaskFrame.MAXIMIZED_BOTH);
-        //adminpendingtaskFrame.setVisible(true);
+        //setting up main panel
         pendingTaskMainPanel.setVisible(true);
         pendingTaskMainPanel.setLayout(null);
         pendingTaskMainPanel.setBounds(251,120,1450,629);
         pendingTaskMainPanel.setBackground(Color.LIGHT_GRAY);
-        //adminpendingtaskFrame.add(pendingTaskMainPanel);
+
+        //creating main panel for adding textfield and filter button
         upperPanel= new JPanel();
         upperPanel.setLayout(null);
         upperPanel.setBounds(0,0,1450,100);
 
         pendingTaskMainPanel.add(upperPanel);
 
-        JLabel filterlabel = new JLabel("Filter :");
-        filterlabel.setBackground(Color.white);
-        filterlabel.setBounds(35,40,60,40);
-        upperPanel.add(filterlabel);
+
 
 
         final JTextField filterTextField = new JTextField("");
@@ -55,6 +51,7 @@ public class AdminPendingTask implements InitiateComponents
         findFilterButton.setBounds(340,40,60,40);
         upperPanel.add(findFilterButton);
 
+        //creating model to display  table amd perform filter operation on it
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Developer-id");
         model.addColumn("Name");
@@ -68,16 +65,20 @@ public class AdminPendingTask implements InitiateComponents
         allUsersDataFetching = pstm.executeQuery();
         while(allUsersDataFetching.next())
         {
+            // adding the row which is not present in the survey_response table
             model.addRow(new Object[]{allUsersDataFetching.getInt(1), allUsersDataFetching.getString(2), allUsersDataFetching.getString(3), allUsersDataFetching.getLong(4)});
         }
         table = new JTable(model);
+
         final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
         table.setRowSorter(sorter);
         JScrollPane filterTableScrollPane =new JScrollPane(table);
         filterTableScrollPane.setBounds(2,101,1345,525);
         pendingTaskMainPanel.add(filterTableScrollPane);
 
+
         findFilterButton.addActionListener(e -> {
+            //checking the regex pattern to perform search operation on model
             String text = filterTextField.getText();
             if(text.length() == 0) {
                 sorter.setRowFilter(null);
@@ -94,14 +95,5 @@ public class AdminPendingTask implements InitiateComponents
 
 
     }
-    /*public Connection createConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/survey_system", "Aress", "Aress@aress123");
-        System.out.println("connection established");
-        return conn;
-    }*/
 
-    /*public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        new AdminPendingTask();
-    }*/
 }

@@ -102,16 +102,19 @@ public void initComponents(){
 
     private void exitButtonActionListener()
     {
+        //Exiting button showing confirmDialoogue
         int a=JOptionPane.showConfirmDialog(loginPagePanel,"Are you sure ?","Exit" +
                 "",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
         if(a==JOptionPane.YES_OPTION)
         {
+            //using system exit for closing the frame
             System.exit(0);
         }
     }
 
     private void resetButtonActionListener()
     {
+        //clearing text which is displaying on frame
         userNameField.setText("");
         passwordField.setText("");
     }
@@ -119,10 +122,11 @@ public void initComponents(){
     private void loginButtonActionListener()
     {
         try{
+            //getting connection from UtilityFunctions
             Connection connection= UtilityFunctions.createConnection();
 
+            //getting data which user entered
             String username = userNameField.getText();
-
             String password= UtilityFunctions.encryptDecrypt( new String(passwordField.getPassword()));
 
 
@@ -135,9 +139,13 @@ public void initComponents(){
 
             if(roleNameFetching.next())
             {
+                    //fetching role and user_id of the user which is logining in
                     String role_name= roleNameFetching.getString("role");
                     System.out.println(role_name);
+                    //LOGIN_USERID required for filling survey purpose
                     LOGIN_USERID=roleNameFetching.getInt("user_id");
+
+                    // performing role based authentication
                     if(role_name.equalsIgnoreCase("admin"))
                     {
                         MainAdminGUI mainAdminGUI=new MainAdminGUI();
@@ -160,6 +168,7 @@ public void initComponents(){
             }
             else
             {
+                // showing error that entered username and password is invalid
                 JOptionPane.showMessageDialog(loginPagePanel,"Enter Valid username and password","Invalid Login",JOptionPane.ERROR_MESSAGE);
 
             }
