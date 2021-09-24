@@ -39,7 +39,7 @@ public class MainUserGUI extends JFrame {
     Connection con = createConnection();
 
     private JButton feedbackButton,nextButton,secondNextButton,thirdNextButton,fourthNextButton,fifthNextButton,submitButton;
-    private JPanel mainPanel,secondPanel,thirdPanel,fourthPanel,fifthPanel,topPanel,bottomPanel,buttonPanel,commentPanel;
+    private JPanel mainPanel,secondPanel,thirdPanel,fourthPanel,fifthPanel,topPanel,buttonPanel,commentPanel;
     private JLabel publishDateLabel,closeDateLabel;
     private JTextField commentArea;
 
@@ -84,7 +84,6 @@ public class MainUserGUI extends JFrame {
         fourthPanel=userFramesAndPanelsObj.putFourthPanel();
         fifthPanel= userFramesAndPanelsObj.putFifthPanel();
         topPanel = userFramesAndPanelsObj.putTopPanel();
-        bottomPanel = userFramesAndPanelsObj.putBottomPanel();
         buttonPanel = userFramesAndPanelsObj.putButtonPanel();
 
         // Buttons
