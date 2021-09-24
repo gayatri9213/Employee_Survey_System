@@ -171,20 +171,6 @@ public class MainUserGUI extends JFrame {
                         closeDate = publishAndCloseDate.getString(3);
 
                         //Add question, question_id and radio buttons on the panel
-                        JTextField publishDateField = new JTextField();
-                        publishDateField.setBounds(100,17,100,20);
-                        publishDateField.setText(publishDate);
-                        publishDateField.setEditable(false);
-                        publishDateField.setVisible(true);
-                        topPanel.add(publishDateField);
-
-                        JTextField closeDateField = new JTextField();
-                        closeDateField.setBounds(100,40,100,20);
-                        closeDateField.setText(closeDate);
-                        closeDateField.setEditable(false);
-                        closeDateField.setVisible(true);
-                        topPanel.add(closeDateField);
-
                         JTextField textFieldId = new JTextField();
                         textFieldId.setBounds(30,50,100,RADIOH);
                         textFieldId.setText(String.valueOf(fetch.get(0).getFetchedQuestionId()));
@@ -209,7 +195,6 @@ public class MainUserGUI extends JFrame {
                         respFour.setBounds(480,RADIOY,RADIOW,RADIOH);
                         respFive.setBounds(590,RADIOY,RADIOW,RADIOH);
 
-                        // GROUP ALL THE RADIO BUTTONS TO KEEP ONLY ONE RADIO BUTTON SELECTED
                         group = new ButtonGroup();
                         group.add(respOne);
                         group.add(respTwo);
