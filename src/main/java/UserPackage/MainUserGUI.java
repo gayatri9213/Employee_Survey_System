@@ -1,10 +1,5 @@
 package UserPackage;
 
-
-/*
- * @Author: Mayur Pardeshi
- * */
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +18,12 @@ import com.labels.AllLabels;
 
 // Utility Class
 import static com.util.UtilityFunctions.createConnection;
+
+/*
+* @Author: Mayur Pardeshi
+* */
+
+
 
 public class MainUserGUI extends JFrame {
 
@@ -74,7 +75,7 @@ public class MainUserGUI extends JFrame {
         categoryCombo.setSize(50, 50);
         categoryCombo.setBounds(10, 10, 200, 25);
 
-        // Frames and panels ---> from AllFramesAndPanels
+        // Frames and panels
         queFrame = userFramesAndPanelsObj.putFrame();
         mainPanel = userFramesAndPanelsObj.putMainPanel();
         commentPanel = userFramesAndPanelsObj.putCommentPanel();
@@ -86,7 +87,7 @@ public class MainUserGUI extends JFrame {
         bottomPanel = userFramesAndPanelsObj.putBottomPanel();
         buttonPanel = userFramesAndPanelsObj.putButtonPanel();
 
-        // Buttons ---> from AllUserInputButtons
+        // Buttons
         feedbackButton = userInputButtonsCallingObj.putFeedbackButton();
         nextButton = userInputButtonsCallingObj.putNextButton();
         secondNextButton=userInputButtonsCallingObj.putSecondButton() ;
@@ -95,7 +96,7 @@ public class MainUserGUI extends JFrame {
         fifthNextButton=userInputButtonsCallingObj.putFifthButton();
         submitButton = userInputButtonsCallingObj.putSubmitButton();
 
-        // Labels --->  from AllLabels
+        // Labels
         publishDateLabel = labelsObj.putPublishDate();
         closeDateLabel = labelsObj.putCloseDate();
 
@@ -132,8 +133,6 @@ public class MainUserGUI extends JFrame {
         feedbackButton.addActionListener(e -> {
             mainPanel.setVisible(true);
             categoryCombo.setVisible(true);
-
-            //FUNCTION CALL ---> FOR ADDING CATEGORY IN THE COMBOBOX
             addComboBox();
         });
 
@@ -209,7 +208,6 @@ public class MainUserGUI extends JFrame {
                         respFour.setBounds(480,RADIOY,RADIOW,RADIOH);
                         respFive.setBounds(590,RADIOY,RADIOW,RADIOH);
 
-                        // GROUP ALL THE RADIO BUTTONS TO KEEP ONLY ONE RADIO BUTTON SELECTED
                         group = new ButtonGroup();
                         group.add(respOne);
                         group.add(respTwo);
@@ -567,10 +565,7 @@ public class MainUserGUI extends JFrame {
 
     }
 
-    // ADDING THE CATEGORIES IN THE COMBOBOX
     public void addComboBox(){
-
-        // CHECK CURRENT DATE
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDateTime now = LocalDateTime.now();
         String currentDate = dateFormat.format(now);
