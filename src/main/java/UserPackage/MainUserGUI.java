@@ -111,6 +111,7 @@ public class MainUserGUI extends JFrame {
         queFrame.add(commentPanel);
 
         buttonPanel.add(feedbackButton);
+
         secondPanel.add(secondNextButton);
         thirdPanel.add(thirdNextButton);
         fourthPanel.add(fourthNextButton);
@@ -122,8 +123,8 @@ public class MainUserGUI extends JFrame {
         topPanel.add(closeDateLabel);
 
         mainPanel.add(categoryCombo);
+        nextButton.setEnabled(false);
         mainPanel.add(nextButton);
-
 
         queFrame.setSize(400, 400);
         queFrame.pack();
@@ -141,6 +142,7 @@ public class MainUserGUI extends JFrame {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     try {
                         feedbackButton.setEnabled(false);
+                        nextButton.setEnabled(true);
                         selectedItem = categoryCombo.getSelectedIndex();
                         fetch.clear();
                         ResultSet fetchId,publishAndCloseDate;
