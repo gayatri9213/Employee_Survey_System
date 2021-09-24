@@ -215,10 +215,17 @@ public class MainClass extends JFrame implements ItemListener {
                 if (choice == 0) {
                     dtm.removeRow(row);
                     surveyList.remove(row);
+                    queList[qi] = insert_id_question_combo(question.getItemAt(question.getSelectedIndex()).toString());
+                    qi--;
                     displaySurveyDetails();
                 }
             }
         });
+        for(int i = 0; i<qi; i--)
+        {
+            System.out.println("que list = "+queList[qi]);
+
+        }
         btnDelete.setFont(new Font("Tahoma", Font.BOLD, 12));
         btnDelete.setBounds(700, 400, 89, 23);
         panel.add(btnDelete);
