@@ -15,7 +15,7 @@ public class AllUserInputButtons extends JButton {
     JButton secondNextButton = new JButton("Next");
     JButton thirdNextButton = new JButton("Next");
     JButton fourthNextButton = new JButton("Next");
-    JButton fifthNextButton = new JButton("Submit 1");
+    JButton fifthNextButton = new JButton("Submit ");
 
     public JButton putFeedbackButton(){
         feedbackButton.setBounds(50,110,BUTTONWIDTH,BUTTONHEIGHT);
