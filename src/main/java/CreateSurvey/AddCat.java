@@ -71,6 +71,11 @@ public class AddCat extends JFrame {
                     ex.printStackTrace();
                 }
                 JOptionPane.showMessageDialog(frame, "Successfull Insertion");
+                try{
+                    new MainClass();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
                 frame.setVisible(false);
 
             }        });

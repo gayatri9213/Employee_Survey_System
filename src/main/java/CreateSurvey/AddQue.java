@@ -81,6 +81,11 @@ public class AddQue extends JFrame
                     ex.printStackTrace();
                 }
                 JOptionPane.showMessageDialog(frame, "Successfull Insertion");
+                try {
+                    new MainClass();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
                 frame.setVisible(false);
 
             }        });
