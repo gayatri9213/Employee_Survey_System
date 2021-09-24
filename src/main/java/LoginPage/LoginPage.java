@@ -24,7 +24,7 @@ LoginPage implements InitiateComponents
 {
 
 private JFrame loginFrame;
-private JPanel loginPagePanel;
+
 private JLabel userNameLabel,passwordLabel;
 private JTextField userNameField;
 private JPasswordField passwordField;
@@ -32,7 +32,7 @@ private JButton loginButton,resetButton,exitButton;
 private PreparedStatement preparedStatement;
 private ResultSet roleNameFetching;
 public JFrame queFrame;
-public JFrame frame;
+
 public static int LOGIN_USERID=0;
 
 
@@ -103,7 +103,7 @@ public void initComponents(){
     private void exitButtonActionListener()
     {
         //Exiting button showing confirmDialoogue
-        int a=JOptionPane.showConfirmDialog(loginPagePanel,"Are you sure ?","Exit" +
+        int a=JOptionPane.showConfirmDialog(loginFrame,"Are you sure ?","Exit" +
                 "",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
         if(a==JOptionPane.YES_OPTION)
         {
@@ -148,12 +148,12 @@ public void initComponents(){
                     // performing role based authentication
                     if(role_name.equalsIgnoreCase("admin"))
                     {
-                        MainAdminGUI mainAdminGUI=new MainAdminGUI();
+                        new MainAdminGUI();
                         loginFrame.setVisible(false);
                     }
                     else if(role_name.equalsIgnoreCase("developer"))
                     {
-                        MainUserGUI mainUserGUI=new MainUserGUI();
+                        new MainUserGUI();
                         loginFrame.setVisible(false);
                         
                     }
@@ -161,7 +161,7 @@ public void initComponents(){
                     {
 
 
-                        MainManagerGUI mainManagerGUI=new MainManagerGUI();
+                        new MainManagerGUI();
                         loginFrame.setVisible(false);
                     }
 
@@ -169,7 +169,7 @@ public void initComponents(){
             else
             {
                 // showing error that entered username and password is invalid
-                JOptionPane.showMessageDialog(loginPagePanel,"Enter Valid username and password","Invalid Login",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(loginFrame,"Enter Valid username and password","Invalid Login",JOptionPane.ERROR_MESSAGE);
 
             }
         }
